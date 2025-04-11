@@ -32,6 +32,27 @@ public class Validator {
         }
     }
 
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public static boolean isValidDateFormat(String date) {
+        return date.matches("^\\d{4}-\\d{2}-\\d{2}$");
+    }
+
+    public static boolean isValidDate(String date) {
+        try {
+            LocalDate.parse(date, FORMATTER);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+
+    public static boolean isAfterOrEqual(String newDate, String oldDate) {
+        LocalDate newD = LocalDate.parse(newDate, FORMATTER);
+        LocalDate oldD = LocalDate.parse(oldDate, FORMATTER);
+        return !newD.isBefore(oldD);
+    }
+
     public static String validateIsbnDetailed(String isbn) {
         if (isbn == null || isbn.isEmpty()) {
             return "!! ISBN을 입력해주세요.";

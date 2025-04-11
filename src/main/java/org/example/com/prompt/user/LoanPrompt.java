@@ -3,6 +3,8 @@ package org.example.com.prompt.user;
 import org.example.com.model.Book;
 import org.example.com.util.BookFileManager;
 import org.example.com.model.User;
+import org.example.com.model.Date;
+import org.example.com.util.DateManager;
 import org.example.com.util.Validator;
 import org.example.com.util.FileManager;
 
@@ -20,6 +22,7 @@ public class LoanPrompt {
     }
 
     public void start() {
+
         if (currentUser.getLoanCount() >= 5) {
             System.out.println("❌ 대출 권한 초과: 최대 5권까지 대출할 수 있습니다.");
             return;

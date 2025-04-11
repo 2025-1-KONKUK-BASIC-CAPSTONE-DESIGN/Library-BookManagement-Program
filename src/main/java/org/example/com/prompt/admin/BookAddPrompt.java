@@ -4,6 +4,7 @@ import org.example.com.model.Book;
 import org.example.com.util.BookFileManager;
 import org.example.com.util.Validator;
 
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 public class BookAddPrompt {
