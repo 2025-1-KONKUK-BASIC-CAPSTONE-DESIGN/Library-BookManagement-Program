@@ -1,10 +1,17 @@
 package org.example.com.prompt.start;
 
+import org.example.com.model.User;
+import org.example.com.prompt.admin.AdminPrompt;
+import org.example.com.prompt.user.UserPrompt;
+import org.example.com.util.FileManager;
+import org.example.com.util.Validator;
+
+import java.util.List;
 import java.util.Scanner;
 
 public class StartPrompt {
-
     private final Scanner scanner = new Scanner(System.in);
+    private User currentUser;
 
     public void start() {
         while (true) {
@@ -20,7 +27,7 @@ public class StartPrompt {
                     new SignUpPrompt().start();
                     break;
                 case "2":
-                    new LoginPrompt().start();
+                    login();
                     break;
                 case "3":
                     System.out.println("👋 프로그램을 종료합니다.");
@@ -28,6 +35,59 @@ public class StartPrompt {
                 default:
                     System.out.println("❌ 입력에 해당하는 명령어가 없습니다. 1, 2, 3 중 하나만 입력해 주세요.");
             }
+        }
+    }
+
+    private void login() {
+        System.out.println("\n🔐 로그인 절차를 시작합니다.");
+
+        String today;
+        while (true) {
+            System.out.print("날짜를 입력하세요 (YYYY-MM-DD): ");
+            today = scanner.nextLine().trim();
+
+            if (!Validator.isValidBirth(today)) {
+                System.out.println("❌ 예전 날짜이거나 형식이 올바르지 않습니다. 다시 입력해주세요.");
+                continue;
+            }
+            break;
+        }
+
+        List<User> users = FileManager.loadUsers();
+
+        while (true) {
+            System.out.print("ID를 입력하세요: ");
+            String id = scanner.nextLine().trim();
+
+            currentUser = users.stream()
+                    .filter(u -> u.getId().equals(id))
+                    .findFirst()
+                    .orElse(null);
+
+            if (currentUser == null) {
+                System.out.println("❌ 존재하지 않는 ID입니다. 다시 입력해주세요.");
+                continue;
+            }
+            break;
+        }
+
+        while (true) {
+            System.out.print("비밀번호를 입력하세요: ");
+            String pwd = scanner.nextLine().trim();
+
+            if (!currentUser.getPassword().equals(pwd)) {
+                System.out.println("❌ 비밀번호가 일치하지 않습니다. 다시 입력해주세요.");
+                continue;
+            }
+            break;
+        }
+
+        System.out.println("✅ 로그인 성공!");
+
+        if (currentUser.getId().equalsIgnoreCase("admin")) {
+            new AdminPrompt().start();
+        } else {
+            new UserPrompt(currentUser).start();
         }
     }
 }
