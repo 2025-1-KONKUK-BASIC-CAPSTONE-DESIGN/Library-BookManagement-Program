@@ -6,27 +6,22 @@ import java.time.format.DateTimeParseException;
 
 public class Validator {
 
-    // ID: 6자 이상, 영문 대소문자 + 숫자만 허용
     public static boolean isValidId(String id) {
         return id.matches("^[a-zA-Z0-9]{6,}$");
     }
 
-    // Password: 8자 이상, 영문 대/소문자, 숫자, 특수문자 각각 최소 1개 포함
     public static boolean isValidPassword(String password) {
         return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s:]).{8,}$");
     }
 
-    // 전화번호: "010 XXXX XXXX" 형식
     public static boolean isValidPhone(String phone) {
         return phone.matches("^010\\s\\d{4}\\s\\d{4}$");
     }
 
-    // 이메일: 아이디는 특수문자 없이, 도메인은 @gmail.com 고정
     public static boolean isValidEmail(String email) {
         return email.matches("^[a-zA-Z0-9]+@gmail\\.com$");
     }
 
-    // 생년월일: YYYY-MM-DD 형식 + 1900~2025년 사이 + 존재하는 날짜
     public static boolean isValidBirth(String birth) {
         try {
             LocalDate date = LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -37,8 +32,23 @@ public class Validator {
         }
     }
 
+    public static String validateIsbnDetailed(String isbn) {
+        if (isbn == null || isbn.isEmpty()) {
+            return "!! ISBN을 입력해주세요.";
+        }
+        if (isbn.contains(" ") || isbn.contains("-")) {
+            return "!! ISBN에는 하이픈(-), 공백, 기타 특수문자는 포함되어서는 안 됩니다. 공백 없는 13자리 숫자를 입력해주세요.";
+        }
+        if (!isbn.matches("^\\d+$")) {
+            return "!! ISBN에는 숫자만 포함되어 있습니다. 공백 없는 13자리 숫자를 입력해주세요.";
+        }
+        if (isbn.length() != 13) {
+            return "!! ISBN은 정확히 13자리여야 합니다.";
+        }
+        return ""; // 유효함
+    }
+
     public static boolean isValidISBN(String isbn) {
-        // ISBN은 13자리 숫자만 허용 (예: 9781234567890)
-        return isbn != null && isbn.matches("^\\d{13}$");
+        return validateIsbnDetailed(isbn).isEmpty();
     }
 }

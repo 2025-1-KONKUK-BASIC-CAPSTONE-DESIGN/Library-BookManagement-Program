@@ -3,7 +3,11 @@ package org.example.com.prompt.user;
 import org.example.com.model.Book;
 import org.example.com.util.BookFileManager;
 import org.example.com.model.User;
+import org.example.com.util.Validator;
+import org.example.com.util.FileManager;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,58 +20,70 @@ public class LoanPrompt {
     }
 
     public void start() {
+        if (currentUser.getLoanCount() >= 5) {
+            System.out.println("❌ 대출 권한 초과: 최대 5권까지 대출할 수 있습니다.");
+            return;
+        }
+
         List<Book> books = BookFileManager.loadBooks();
 
-        if (books.isEmpty()) {
-            System.out.println("📭 대출할 수 있는 도서가 없습니다.");
-            return;
-        }
-
+        boolean hasAvailable = false;
         System.out.println("\n📚 대출 가능한 도서 목록:");
-        int availableCount = 0;
-        for (int i = 0; i < books.size(); i++) {
-            Book book = books.get(i);
+        for (Book book : books) {
             if (book.getAvailableQuantity() > 0) {
-                System.out.printf("%d. %s / 저자: %s / ISBN: %s / 남은 수량: %d\n",
-                        i + 1, book.getTitle(), book.getAuthor(), book.getIsbn(), book.getAvailableQuantity());
-                availableCount++;
+                hasAvailable = true;
+                System.out.printf("- %s / 저자: %s / ISBN: %s / 남은 수량: %d\n",
+                        book.getTitle(), book.getAuthor(), book.getIsbn(), book.getAvailableQuantity());
             }
         }
 
-        if (availableCount == 0) {
-            System.out.println("❗ 모든 도서가 대출 중입니다.");
+        if (!hasAvailable) {
+            System.out.println("❗ 대출 가능한 도서가 없습니다.");
             return;
         }
 
-        int index;
         while (true) {
-            System.out.print("대출할 도서 번호를 입력하세요 (취소: 0): ");
-            String input = scanner.nextLine().trim();
-            try {
-                index = Integer.parseInt(input);
-                if (index == 0) {
-                    System.out.println("❗ 대출을 취소했습니다.");
-                    return;
-                }
-                if (index < 1 || index > books.size()) {
-                    System.out.println("❌ 유효한 번호를 입력해주세요.");
-                    continue;
-                }
-                if (books.get(index - 1).getAvailableQuantity() <= 0) {
-                    System.out.println("❌ 해당 도서는 대출이 불가능합니다.");
-                    continue;
-                }
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("❌ 숫자로 입력해주세요.");
+            System.out.print("\n대출할 책의 ISBN을 입력해주세요 (취소: 0): ");
+            String isbn = scanner.nextLine().trim();
+
+            if (isbn.equals("0")) {
+                System.out.println("❗ 대출을 취소했습니다.");
+                return;
             }
+
+            String isbnError = Validator.validateIsbnDetailed(isbn);
+            if (!isbnError.isEmpty()) {
+                System.out.println(isbnError);
+                continue;
+            }
+
+            Book selectedBook = null;
+            for (Book book : books) {
+                if (book.getIsbn().equals(isbn)) {
+                    selectedBook = book;
+                    break;
+                }
+            }
+
+            if (selectedBook == null) {
+                System.out.println("!! 목록에 존재하지 않는 도서입니다.");
+                continue;
+            }
+
+            if (selectedBook.getAvailableQuantity() <= 0) {
+                System.out.println("❌ 해당 도서는 현재 대출이 불가능합니다.");
+                continue;
+            }
+
+            selectedBook.setAvailableQuantity(selectedBook.getAvailableQuantity() - 1);
+            currentUser.setLoanCount(currentUser.getLoanCount() + 1);
+            BookFileManager.saveAllBooks(books);
+            FileManager.updateUser(currentUser);
+
+            long remainingDays = 13L; // 대출 기본 기간
+            System.out.printf("%s이 대출되었습니다. 현재 %d권 대출하였으며, 잔여 반납일은 %d일입니다.\n",
+                    selectedBook.getTitle(), currentUser.getLoanCount(), remainingDays);
+            return;
         }
-
-        Book selected = books.get(index - 1);
-        selected.setAvailableQuantity(selected.getAvailableQuantity() - 1);
-        currentUser.setLoanCount(currentUser.getLoanCount() + 1);
-        BookFileManager.saveAllBooks(books);
-
-        System.out.println("✅ 도서 [" + selected.getTitle() + "] 대출이 완료되었습니다.");
     }
 }

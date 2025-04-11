@@ -1,9 +1,8 @@
 package org.example.com.prompt.user;
 
-import org.example.com.prompt.book.BookPrompt;
 import org.example.com.model.User;
-
 import java.util.Scanner;
+import org.example.com.prompt.book.BookPrompt;
 
 public class UserPrompt {
     private final Scanner scanner = new Scanner(System.in);
@@ -15,10 +14,10 @@ public class UserPrompt {
 
     public void start() {
         while (true) {
-            System.out.println("\n📘 사용자 메뉴 (로그인 ID: " + currentUser.getId() + ")");
-            System.out.println("1. 도서 목록 조회");
-            System.out.println("2. 도서 대출");
-            System.out.println("3. 도서 반납");
+            System.out.printf("\n[%s님 접속 중]\n", currentUser.getId());
+            System.out.println("1. 도서 프롬포트");
+            System.out.println("2. 대출");
+            System.out.println("3. 반납");
             System.out.println("4. 날짜 변경");
             System.out.println("5. 종료");
             System.out.print("명령어를 입력하세요: ");
@@ -35,13 +34,13 @@ public class UserPrompt {
                     new ReturnPrompt(currentUser).start();
                     break;
                 case "4":
-                    new DatePrompt().start();
+                    new DatePrompt(currentUser).start();
                     break;
                 case "5":
-                    System.out.println("👋 사용자 메뉴를 종료합니다.");
+                    System.out.println("프로그램을 종료합니다.");
                     return;
                 default:
-                    System.out.println("❌ 잘못된 입력입니다. 1~5 사이의 번호를 입력하세요.");
+                    System.out.println(" 입력에 해당하는 명령어가 없습니다. 1~5 사이 숫자를 입력해주세요.");
             }
         }
     }
