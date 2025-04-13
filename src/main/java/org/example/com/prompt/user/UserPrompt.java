@@ -25,7 +25,7 @@ public class UserPrompt {
 
             switch (input) {
                 case "1":
-                    new BookPrompt().start();
+                    new BookPrompt(currentUser).start();
                     break;
                 case "2":
                     new LoanPrompt(currentUser).start();

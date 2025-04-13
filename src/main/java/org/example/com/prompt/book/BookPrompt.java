@@ -1,31 +1,49 @@
 package org.example.com.prompt.book;
 
-import org.example.com.model.Book;
-import org.example.com.util.BookFileManager;
+import org.example.com.model.User;
+import org.example.com.prompt.admin.AdminPrompt;
+import org.example.com.prompt.user.UserPrompt;
 
-import java.nio.charset.Charset;
-import java.util.List;
+import java.util.Scanner;
 
 public class BookPrompt {
+    private final Scanner scanner = new Scanner(System.in);
+    private final User currentUser;
+
+    public BookPrompt(User currentUser) {
+        this.currentUser = currentUser;
+    }
+
 
     public void start() {
-        List<Book> books = BookFileManager.loadBooks();
+        while (true) {
+            System.out.println("\nBook Prompt");
+            System.out.println("\t1. 전체 도서 목록 보기");
+            System.out.println("\t2. 대출 가능 도서 목록 보기");
+            System.out.println("\t3. 종료");
+            System.out.print("명령어를 입력하세요: ");
+            String input = scanner.nextLine().trim();
 
-        if (books.isEmpty()) {
-            System.out.println("📭 등록된 도서가 없습니다.");
-            return;
-        }
-
-        System.out.println("\n📚 전체 도서 목록:");
-        for (Book book : books) {
-            System.out.printf("- %s\n  저자: %s\n  출판사: %s\n  ISBN: %s\n  대출 가능: %d / 전체 수량: %d\n\n",
-                    book.getTitle(),
-                    book.getAuthor(),
-                    book.getPublisher(),
-                    book.getIsbn(),
-                    book.getAvailableQuantity(),
-                    book.getTotalQuantity()
-            );
+            switch (input) {
+                case "1":
+                    new BookListPrompt().listAllBook();
+                    break;
+                case "2":
+                    new BookListPrompt().listAvailableBook();
+                    break;
+                case "3":
+                    if (currentUser.getId().equalsIgnoreCase("admin")) {
+                        System.out.println("관리자 메뉴로 이동합니다.");
+                        new AdminPrompt().start();
+                    }
+                    else {
+                        System.out.println("사용자 메뉴로 이동합니다.");
+                        new UserPrompt(currentUser).start();
+                    }
+                        return;
+                default:
+                    System.out.println(" 입력에 해당하는 명령어가 없습니다. 1~3 사이 숫자를 입력해주세요.");
+            }
         }
     }
 }
