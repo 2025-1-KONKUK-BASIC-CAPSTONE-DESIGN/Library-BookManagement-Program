@@ -49,4 +49,21 @@ public class BookFileManager {
             e.printStackTrace();
         }
     }
+    public static void saveToFile(String filePath, List<Book> books) {
+        // {HOME}을 실제 사용자 홈 디렉터리로 치환
+        String resolvedPath = filePath.replace("{HOME}", System.getProperty("user.home"));
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resolvedPath))) {
+            for (Book book : books) {
+                writer.write(book.toDataString());
+                writer.newLine();
+            }
+            System.out.println("✅ 파일 저장 완료: " + resolvedPath);
+        } catch (IOException e) {
+            System.out.println("❌ 파일 저장 중 오류 발생");
+            e.printStackTrace();
+        }
+    }
+
+
 }

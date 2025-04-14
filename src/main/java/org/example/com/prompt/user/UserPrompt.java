@@ -26,7 +26,7 @@ public class UserPrompt {
 
             switch (input) {
                 case "1":
-                    new BookPrompt().start();
+                    new BookPrompt("admin").start();
                     break;
                 case "2":
                     new LoanPrompt(currentUser).start();
