@@ -5,7 +5,9 @@ import org.example.com.model.User;
 import org.example.com.util.BookFileManager;
 import org.example.com.util.Validator;
 import org.example.com.util.FileManager;
-
+import java.time.temporal.ChronoUnit;
+import org.example.com.util.DateManager;
+import org.example.com.model.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -89,7 +91,11 @@ public class ReturnPrompt {
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
 
-            int overdueDays = 0; //날짜 데이터 생성후 수정할것
+
+            LocalDate today = LocalDate.parse(DateManager.loadDateFromFile().getValue());
+            LocalDate loanDate = LocalDate.parse(DateManager.loadLoanDateFromFile().getValue());
+            long daysBetween = ChronoUnit.DAYS.between(loanDate, today);
+            int overdueDays = (int) Math.max(0, daysBetween - 13);
             System.out.printf("%s이 반납되었습니다. 현재 %d권 대출하였으며, 연체일은 %d일입니다.\n",
                     selectedBook.getTitle(), currentUser.getLoanCount(), overdueDays);
 

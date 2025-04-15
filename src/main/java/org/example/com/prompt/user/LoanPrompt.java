@@ -91,7 +91,7 @@ public class LoanPrompt {
             currentUser.setLoanCount(currentUser.getLoanCount() + 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
-            DateManager.saveDateToFile(DateManager.loadDateFromFile());  // ← 추가된 대출일 저장 코드
+            DateManager.saveLoanDateToFile(DateManager.loadDateFromFile());// ← 추가된 대출일 저장 코드
 
 
 
