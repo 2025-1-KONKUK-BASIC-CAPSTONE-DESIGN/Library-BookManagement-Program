@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 public class StartPrompt {
     private final Scanner scanner = new Scanner(System.in);
-    private User currentUser;
+    private final User admin = new User("admin", "admin", "010-0000-0000", "admin@gmail.com", "1931-05-10");
 
     public void start() {
         while (true) {
@@ -62,6 +62,7 @@ public class StartPrompt {
         }
 
         List<User> users = FileManager.loadUsers();
+        users.add(admin);   //admin 계정은 가입하지 않아도 존재.
 
         User currentUser;
         while (true) {
