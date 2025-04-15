@@ -45,6 +45,12 @@ public class Book {
         this.availableQuantity = availableQuantity;
     }
 
+
+    public void setTotalQuantity(int totalQuantity) {
+        this.totalQuantity = totalQuantity;
+    }
+
+
     public String toDataString() {
         return String.join("\t",
                 title, author, publisher, isbn,
