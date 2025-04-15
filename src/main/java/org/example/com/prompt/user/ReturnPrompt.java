@@ -44,18 +44,12 @@ public class ReturnPrompt {
 
         while (true) {
             System.out.print("\n반납할 책의 ISBN을 입력해주세요 (취소: 0): ");
-            String isbn = scanner.nextLine();
+            String isbn = scanner.nextLine().trim();
 
             if (isbn.equals("0")) {
                 System.out.println("❗ 반납을 취소했습니다.");
                 return;
             }
-
-            if (!isbn.matches("^\\d{13}$")) {
-                System.out.println("❌ ISBN 형식이 올바르지 않습니다. 공백 없는 13자리 숫자를 입력해주세요.");
-                continue;
-            }
-
 
             String isbnError = Validator.validateIsbnDetailed(isbn);
             if (!isbnError.isEmpty()) {

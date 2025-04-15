@@ -44,19 +44,7 @@ public class LoanPrompt {
 
         while (true) {
             System.out.print("\n대출할 책의 ISBN을 입력해주세요 (취소: 0): ");
-            String isbn = scanner.nextLine();
-
-            if (isbn.equals("0")) {
-                System.out.println("❗ 대출을 취소했습니다.");
-                return;
-            }
-
-            if (!isbn.matches("^\\d{13}$")) {
-                System.out.println("❌ ISBN 형식이 올바르지 않습니다. 공백 없는 13자리 숫자를 입력해주세요.");
-                continue;
-            }
-
-
+            String isbn = scanner.nextLine().trim();
 
             if (isbn.equals("0")) {
                 System.out.println("❗ 대출을 취소했습니다.");

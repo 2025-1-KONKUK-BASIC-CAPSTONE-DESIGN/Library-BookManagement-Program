@@ -21,12 +21,7 @@ public class UserPrompt {
             System.out.println("4. 날짜 변경");
             System.out.println("5. 종료");
             System.out.print("명령어를 입력하세요: ");
-            String input = scanner.nextLine();
-
-            if (!input.matches("^[1-5]$")) {
-                System.out.println(" 입력에 해당하는 명령어가 없습니다. 1~5 사이 숫자를 입력해주세요.");
-                continue;
-            }
+            String input = scanner.nextLine().trim();
 
             switch (input) {
                 case "1":
@@ -44,6 +39,8 @@ public class UserPrompt {
                 case "5":
                     System.out.println("프로그램을 종료합니다.");
                     return;
+                default:
+                    System.out.println(" 입력에 해당하는 명령어가 없습니다. 1~5 사이 숫자를 입력해주세요.");
             }
         }
     }
