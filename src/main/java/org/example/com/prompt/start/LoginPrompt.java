@@ -71,7 +71,7 @@ public class LoginPrompt {
 
         // 관리자인지 확인 (관리자 ID는 admin으로 가정)
         if (id.equalsIgnoreCase("admin")) {
-            new AdminPrompt().start();
+            new AdminPrompt(currentUser).start();
         } else {
 //            new UserPrompt(currentUser).start();
         }

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
+import org.example.com.model.User;
 import org.example.com.prompt.book.BookPrompt;
 import org.example.com.prompt.user.DatePrompt;
 import org.example.com.util.BookFileManager;
@@ -13,6 +14,11 @@ import org.example.com.util.BookFileManager;
 
 public class AdminPrompt {
     private final Scanner scanner = new Scanner(System.in);
+    private final User currentUser;
+
+    public AdminPrompt(User currentUser) {
+        this.currentUser = currentUser;
+    }
 
     public void start() {
         while (true) {
@@ -71,10 +77,10 @@ public class AdminPrompt {
                     new BookDeletePrompt().start();
                     break;
                 case "3":
-                    new BookPrompt("admin").start();
+                    new BookPrompt(currentUser).start();
                     break;
                 case "5":
-                    new DatePrompt().start();
+                    new DatePrompt(currentUser).start();
                     break;
                 case "6":
                     System.out.println("👋 관리자 메뉴를 종료합니다.");

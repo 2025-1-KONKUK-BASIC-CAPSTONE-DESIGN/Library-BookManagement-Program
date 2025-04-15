@@ -34,7 +34,7 @@ public class BookPrompt {
                 case "3":
                     if (currentUser.getId().equalsIgnoreCase("admin")) {
                         System.out.println("관리자 메뉴로 이동합니다.");
-                        new AdminPrompt().start();
+                        new AdminPrompt(currentUser).start();
                     }
                     else {
                         System.out.println("사용자 메뉴로 이동합니다.");

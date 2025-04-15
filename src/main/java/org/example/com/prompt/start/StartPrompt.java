@@ -63,6 +63,7 @@ public class StartPrompt {
 
         List<User> users = FileManager.loadUsers();
 
+        User currentUser;
         while (true) {
             System.out.print("ID를 입력하세요: ");
             String id = scanner.nextLine().trim();
@@ -93,7 +94,7 @@ public class StartPrompt {
         System.out.println("✅ 로그인 성공!");
 
         if (currentUser.getId().equalsIgnoreCase("admin")) {
-            new AdminPrompt().start();
+            new AdminPrompt(currentUser).start();
         } else {
             new UserPrompt(currentUser).start();
         }
