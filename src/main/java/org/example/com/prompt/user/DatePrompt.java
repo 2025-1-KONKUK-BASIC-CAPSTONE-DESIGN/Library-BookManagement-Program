@@ -5,6 +5,8 @@ import org.example.com.model.User;
 import org.example.com.util.DateManager;
 import org.example.com.util.Validator;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
+
 
 
 import java.time.LocalDate;
@@ -29,10 +31,10 @@ public class DatePrompt {
 
         while (true) {
             System.out.print("변경할 날짜를 입력하세요 (YYYY-MM-DD): ");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
 
-            if (!Validator.isValidDateFormat(input) || !Validator.isValidDate(input)) {
-                System.out.println("❌ 올바르지 않은 날짜입니다.");
+            if (!input.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+                System.out.println("❌ 날짜 형식이 올바르지 않습니다. YYYY-MM-DD 형식으로 공백 없이 입력해주세요.");
                 continue;
             }
 
@@ -43,10 +45,18 @@ public class DatePrompt {
                 continue;
             }
 
-            DateManager.saveDateToFile(Date.parse(input));
             LocalDate newDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            LocalDate loanDate = LocalDate.parse(DateManager.loadDateFromFile().getValue());
+
+            long daysBetween = ChronoUnit.DAYS.between(loanDate, newDate);
+            int overdueDays = (int) Math.max(0, daysBetween - 13);
+
+            DateManager.saveDateToFile(Date.parse(input));  // 날짜 변경은 마지막에 저장
             currentDate = newDate;
-            int overdueDays = 0; // 날짜 데이터 생성 후 수정할것
+
+
+
+
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
             System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));

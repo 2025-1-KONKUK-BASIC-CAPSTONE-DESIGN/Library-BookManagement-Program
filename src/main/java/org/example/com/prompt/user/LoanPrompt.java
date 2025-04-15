@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
+import java.time.LocalDate;
+
 
 public class LoanPrompt {
     private final Scanner scanner = new Scanner(System.in);
@@ -47,12 +49,19 @@ public class LoanPrompt {
 
         while (true) {
             System.out.print("\n대출할 책의 ISBN을 입력해주세요 (취소: 0): ");
-            String isbn = scanner.nextLine().trim();
+            String isbn = scanner.nextLine();
 
             if (isbn.equals("0")) {
                 System.out.println("❗ 대출을 취소했습니다.");
                 return;
             }
+
+            if (!isbn.matches("^\\d{13}$")) {
+                System.out.println("❌ ISBN 형식이 올바르지 않습니다. 공백 없는 13자리 숫자를 입력해주세요.");
+                continue;
+            }
+
+
 
             String isbnError = Validator.validateIsbnDetailed(isbn);
             if (!isbnError.isEmpty()) {
@@ -82,6 +91,9 @@ public class LoanPrompt {
             currentUser.setLoanCount(currentUser.getLoanCount() + 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
+            DateManager.saveDateToFile(DateManager.loadDateFromFile());  // ← 추가된 대출일 저장 코드
+
+
 
             long remainingDays = 13L; // 대출 기본 기간
             System.out.printf("%s이 대출되었습니다. 현재 %d권 대출하였으며, 잔여 반납일은 %d일입니다.\n",
