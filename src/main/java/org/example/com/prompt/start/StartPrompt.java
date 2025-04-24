@@ -43,17 +43,14 @@ public class StartPrompt {
     private void login() {
         System.out.println("\n🔐 로그인 절차를 시작합니다.");
 
-        Date currentDate = DateManager.loadDateFromFile();
         while (true) {
             System.out.print("날짜를 입력하세요 (YYYY-MM-DD): ");
             String input = scanner.nextLine().trim();
 
-            if (!Validator.isValidDateFormat(input) || !Validator.isValidDate(input)) {
-                System.out.println("❌ 형식이 잘못되었거나 유효하지 않은 날짜입니다. 다시 입력해주세요.");
-                continue;
-            }
-            if (currentDate != null && !Validator.isAfterOrEqual(input, currentDate.getValue())) {
-                System.out.println("❌ 과거 날짜는 사용할 수 없습니다. 다시 입력해주세요.");
+            // date 확인
+            String dateError = Validator.validateDateDetailed(input);
+            if (!dateError.isEmpty()) {
+                System.out.println(dateError);
                 continue;
             }
 

@@ -1,8 +1,11 @@
 package org.example.com.util;
 
+import org.example.com.model.Date;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 
 public class Validator {
 
@@ -22,36 +25,62 @@ public class Validator {
         return email.matches("^[a-zA-Z0-9]+@gmail\\.com$");
     }
 
-    public static boolean isValidBirth(String birth) {
-        try {
-            LocalDate date = LocalDate.parse(birth, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            int year = date.getYear();
-            return year >= 1900 && year <= 2025 && date.isBefore(LocalDate.now().plusDays(1));
-        } catch (DateTimeParseException e) {
-            return false;
+    public static String validateDateDetailed(String inputDate) {
+        if (inputDate == null || inputDate.isBlank()) {
+            return "!! 날짜를 입력해주세요.";
         }
-    }
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-    public static boolean isValidDateFormat(String date) {
-        return date.matches("^\\d{4}-\\d{2}-\\d{2}$");
-    }
-
-    public static boolean isValidDate(String date) {
-        try {
-            LocalDate.parse(date, FORMATTER);
-            return true;
-        } catch (DateTimeParseException e) {
-            return false;
+        if (!inputDate.matches("^\\d{4}-\\d{2}-\\d{2}$")) {
+            return "!! 날짜는 YYYY-MM-DD 형식이어야 합니다.";
         }
+
+        String[] parts = inputDate.split("-");
+        int year, month, day;
+
+        try {
+            year = Integer.parseInt(parts[0]);
+            month = Integer.parseInt(parts[1]);
+            day = Integer.parseInt(parts[2]);
+        } catch (NumberFormatException e) {
+            return "!! 날짜 형식이 잘못되었습니다. 숫자만 입력해주세요.";
+        }
+
+        if (year < 1900 || year > 2025) {
+            return "!! 연도는 1900년부터 2025년까지 허용됩니다.";
+        }
+
+        if (month < 1 || month > 12) {
+            return "!! 월은 01부터 12 사이여야 합니다.";
+        }
+
+        if (day < 1 || day > 31) {
+            return "!! 일은 01부터 31 사이여야 합니다.";
+        }
+
+        // 실제 존재하는 날짜인지 검사
+        if (!isRealDate(year, month, day)) {
+            return "!! 존재하지 않는 날짜입니다. 다시 확인해주세요.";
+        }
+
+        // 현재 날짜와 비교
+        Date current = DateManager.loadDateFromFile();
+
+        if (current != null && inputDate.compareTo(current.getValue()) < 0) {
+            return "!! 오늘(" + current.getValue() + ")보다 이전 날짜는 입력할 수 없습니다.";
+        }
+
+        return ""; // 유효함
     }
 
-    public static boolean isAfterOrEqual(String newDate, String oldDate) {
-        LocalDate newD = LocalDate.parse(newDate, FORMATTER);
-        LocalDate oldD = LocalDate.parse(oldDate, FORMATTER);
-        return !newD.isBefore(oldD);
+    private static boolean isRealDate(int year, int month, int day) {
+        int[] daysInMonth = { 31, isLeap(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+        return day <= daysInMonth[month - 1]; //
     }
+
+    private static boolean isLeap(int year) {
+        return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0); // 윤년 계산
+    }
+
 
     public static String validateIsbnDetailed(String isbn) {
         if (isbn == null || isbn.isEmpty()) {

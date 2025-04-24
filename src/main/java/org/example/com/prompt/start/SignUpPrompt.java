@@ -77,10 +77,13 @@ public class SignUpPrompt {
             System.out.print("생년월일을 입력하세요 (YYYY-MM-DD): ");
             birth = scanner.nextLine().trim();
 
-            if (!Validator.isValidBirth(birth)) {
-                System.out.println("❌ 생년월일 형식이 잘못되었습니다. 1900년~2025년 사이의 날짜로 입력해주세요.");
+            // date 확인
+            String dateError = Validator.validateDateDetailed(birth);
+            if (!dateError.isEmpty()) {
+                System.out.println(dateError);
                 continue;
             }
+
             break;
         }
 
