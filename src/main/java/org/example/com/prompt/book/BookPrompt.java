@@ -1,9 +1,6 @@
 package org.example.com.prompt.book;
 
 import org.example.com.model.User;
-import org.example.com.prompt.admin.AdminPrompt;
-import org.example.com.prompt.user.UserPrompt;
-
 import java.util.Scanner;
 
 public class BookPrompt {
@@ -34,11 +31,9 @@ public class BookPrompt {
                 case "3":
                     if (currentUser.getId().equalsIgnoreCase("admin")) {
                         System.out.println("관리자 메뉴로 이동합니다.");
-                        new AdminPrompt(currentUser).start();
                     }
                     else {
                         System.out.println("사용자 메뉴로 이동합니다.");
-                        new UserPrompt(currentUser).start();
                     }
                         return;
                 default:
