@@ -1,12 +1,12 @@
 package org.example.com.prompt.user;
 
 import org.example.com.model.Book;
+import org.example.com.model.Loan;
 import org.example.com.model.User;
-import org.example.com.util.BookFileManager;
-import org.example.com.util.Validator;
-import org.example.com.util.FileManager;
+import org.example.com.util.*;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,17 +24,23 @@ public class ReturnPrompt {
             return;
         }
 
+        List<Loan> loans = LoanManager.loadNotReturnedLoans(currentUser.getId());
         List<Book> books = BookFileManager.loadBooks();
 
         System.out.println("\n📕 반납 가능한 도서 목록:");
         boolean found = false;
-        for (Book book : books) {
-            if (book.getAvailableQuantity() < book.getTotalQuantity()) {
-                found = true;
-                System.out.printf("- %s / 저자: %s / ISBN: %s / 대출 중: %d권\n",
-                        book.getTitle(), book.getAuthor(), book.getIsbn(),
-                        book.getTotalQuantity() - book.getAvailableQuantity());
-            }
+        LocalDate today = DateManager.loadDateFromFile();
+        if (today == null) {
+            System.err.println("today 데이터 값이 없습니다.");
+            return;
+        }
+
+        for (Loan loan : loans) {
+            found = true;
+            LocalDate dueDate = LocalDate.parse(loan.getDueDate());
+            long remainingDays = ChronoUnit.DAYS.between(today, dueDate);
+            System.out.printf("ISBN: %s / 도서명: %s / 대출일: %s / 반납 예정일: %s / 남은 일수: %d일\n",
+                loan.getIsbn(), loan.getTitle(), loan.getLoanDate(), loan.getDueDate(), remainingDays);
         }
 
         if (!found) {
@@ -58,20 +64,28 @@ public class ReturnPrompt {
             }
 
 
-            Book selectedBook = null;
-            for (Book book : books) {
-                if (book.getIsbn().equals(isbn)) {
-                    selectedBook = book;
+            Loan selectedLoan = null;
+            Book selectedBook;
+            for (Loan loan : loans) {
+                if (loan.getIsbn().equals(isbn)) {
+                    selectedLoan = loan;
                     break;
                 }
             }
 
-            if (selectedBook == null) {
+            if (selectedLoan == null) {
                 System.out.println("!! 목록에 존재하지 않는 도서입니다.");
                 continue;
             }
 
-            if (selectedBook.getAvailableQuantity() == selectedBook.getTotalQuantity()) {
+            selectedLoan.setReturnDate(today.toString());   //대출일 지정
+
+            selectedBook = books.stream()
+                    .filter(book -> book.getIsbn().equals(isbn))
+                    .findAny().orElse(null);
+
+            if (selectedBook == null
+                    || selectedBook.getAvailableQuantity() == selectedBook.getTotalQuantity()) {
                 System.out.println("!! 고유하지 않은 ISBN입니다.");
                 continue;
             }
@@ -81,11 +95,11 @@ public class ReturnPrompt {
             currentUser.setLoanCount(currentUser.getLoanCount() - 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
+            LoanManager.updateLoan(selectedLoan);
 
             int overdueDays = 0; //날짜 데이터 생성후 수정할것
             System.out.printf("%s이 반납되었습니다. 현재 %d권 대출하였으며, 연체일은 %d일입니다.\n",
-                    selectedBook.getTitle(), currentUser.getLoanCount(), overdueDays);
-
+                    selectedLoan.getTitle(), currentUser.getLoanCount(), overdueDays);
 
             return;
         }
