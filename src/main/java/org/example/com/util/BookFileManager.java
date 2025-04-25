@@ -65,5 +65,14 @@ public class BookFileManager {
         }
     }
 
-
+    public static void saveLoanRecord(String record) {
+        String loanPath = System.getProperty("user.home") + "/loan_data.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(loanPath, true))) {
+            writer.write(record);
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("❌ 대여 기록 저장 중 오류 발생");
+            e.printStackTrace();
+        }
+    }
 }

@@ -84,6 +84,23 @@ public class LoanPrompt {
             FileManager.updateUser(currentUser);
 
             long remainingDays = 13L; // 대출 기본 기간
+            LocalDate loadedDate = DateManager.loadDateFromFile();
+            if (loadedDate == null) {
+                System.err.println("날짜 데이터가 없습니다.");
+                return;
+            }
+
+            // 대출 기록을 loan_data.txt에 저장
+            String loanRecord = String.join("\t",
+                    selectedBook.getIsbn(),
+                    selectedBook.getTitle(),
+                    currentUser.getId(),
+                    loadedDate.toString(),
+                    loadedDate.plusDays(remainingDays).toString(),
+                    ""  // 아직 반납하지 않았으므로 빈 문자열
+            );
+            BookFileManager.saveLoanRecord(loanRecord);
+
             System.out.printf("%s이 대출되었습니다. 현재 %d권 대출하였으며, 잔여 반납일은 %d일입니다.\n",
                     selectedBook.getTitle(), currentUser.getLoanCount(), remainingDays);
             return;
