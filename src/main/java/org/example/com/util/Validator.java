@@ -63,10 +63,10 @@ public class Validator {
         }
 
         // 현재 날짜와 비교
-        Date current = DateManager.loadDateFromFile();
+        LocalDate current = DateManager.loadDateFromFile();
 
-        if (current != null && inputDate.compareTo(current.getValue()) < 0) {
-            return "!! 오늘(" + current.getValue() + ")보다 이전 날짜는 입력할 수 없습니다.";
+        if (current != null && inputDate.compareTo(current.toString()) < 0) {
+            return "!! 오늘(" + current + ")보다 이전 날짜는 입력할 수 없습니다.";
         }
 
         return ""; // 유효함
