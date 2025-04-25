@@ -48,9 +48,9 @@ public class BookDeletePrompt {
 
         while (true) {
             System.out.print("삭제 권수를 입력하세요: ");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
 
-            if (!QUANTITY_PATTERN.matcher(input).matches()) {
+            if (!QUANTITY_PATTERN.matcher(input).matches() || !input.equals(input.trim())) {
                 System.out.println("■ 숫자만 와야합니다.\n■ 이 때 숫자 앞, 뒤로 공백이 오면 안됩니다.\n■ 최대 3자리수까지 가능합니다.\n■ 숫자 앞 0은 입력 가능합니다.\n즉, 0 ~ 999 까지 입력 가능합니다. 0, 00, 000, 01, 001 모두 입력 가능한 숫자입니다.");
                 continue;
             }
