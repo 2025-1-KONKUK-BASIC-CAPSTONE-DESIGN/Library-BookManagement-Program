@@ -42,14 +42,15 @@ public class DatePrompt {
                     return;
                 }
 
-                long overdueDays = LoanManager.maxOverdueDays(newDate, currentUser.getId());
-
                 DateManager.saveDateToFile(Date.parse(input));
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
                 System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));
-                System.out.printf("현재 %d권 대출하였으며, %d일 연체되었습니다.\n",
-                        currentUser.getLoanCount(), overdueDays);
+
+                if(currentUser.getId().equals("admin")) return; //admin이라면 대출, 연체 정보 출력 안함.
+
+                long overdueDays = LoanManager.maxOverdueDays(newDate, currentUser.getId());
+                System.out.printf("현재 %d권 대출하였으며, %d일 연체되었습니다.\n", currentUser.getLoanCount(), overdueDays);
                 return;
 
             } catch (DateTimeParseException e) {
