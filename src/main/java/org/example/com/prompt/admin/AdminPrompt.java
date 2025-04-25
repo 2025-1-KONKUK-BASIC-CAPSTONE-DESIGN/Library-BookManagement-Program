@@ -31,40 +31,36 @@ public class AdminPrompt {
             System.out.println("5. 날짜변경");
             System.out.println("6. 종료");
             System.out.print("명령어를 입력하세요: ");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
 
             if (input.equals("4")) {
                 System.out.println("❌ 명령어 4번은 인자가 필요합니다. 도서/날짜/대여 중 하나를 입력해주세요.");
                 continue;
             }
 
-            if (input.startsWith("4 ")) {
-                String[] parts = input.split("\\s+");
-                if (parts.length == 2) {
-                    String type = parts[1];
-                    String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                    String filename;
-                    switch (type) {
-                        case "도서":
-                            filename = today + "-도서-데이터-파일.txt";
-                            BookFileManager.saveToFile(new File(filename).getAbsolutePath(), BookFileManager.loadBooks());
-                            break;
-                         case "날짜":
-                             filename = today + "-날짜-데이터-파일.txt";
-                             DateManager.saveToFile(filename);
-                             break;
-                         case "대여":
-                             filename = today + "-대여-데이터-파일.txt";
-                             DateManager.saveToFile(filename);
-                             break;
-                        default:
-                            System.out.println("❌ 잘못된 항목입니다. '도서', '날짜', '대여' 중 하나를 입력하세요.");
-                    }
-                    continue;
-                } else {
-                    System.out.println("❌ 올바른 형식은 '4 도서' 와 같이 입력해야 합니다.");
-                    continue;
+            if (input.matches("^4 (도서|날짜|대여)$")) {
+                String[] parts = input.split(" ");
+                String type = parts[1];
+                String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                String filename;
+                switch (type) {
+                    case "도서":
+                        filename = today + "-도서-데이터-파일.txt";
+                        BookFileManager.saveToFile(new File(filename).getAbsolutePath(), BookFileManager.loadBooks());
+                        break;
+                    case "날짜":
+                        filename = today + "-날짜-데이터-파일.txt";
+                        DateManager.saveToFile(filename);
+                        break;
+                    case "대여":
+                        filename = today + "-대여-데이터-파일.txt";
+                        DateManager.saveToFile(filename);
+                        break;
                 }
+                continue;
+            } else if (input.startsWith("4")) {
+                System.out.println("❌ 올바른 형식은 '4 도서' 와 같이 입력해야 합니다.");
+                continue;
             }
 
             switch (input) {
