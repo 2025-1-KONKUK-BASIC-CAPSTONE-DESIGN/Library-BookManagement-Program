@@ -1,15 +1,10 @@
 package org.example.com.prompt.user;
 
 import org.example.com.model.Book;
-import org.example.com.util.BookFileManager;
+import org.example.com.util.*;
 import org.example.com.model.User;
-import org.example.com.model.Date;
-import org.example.com.util.DateManager;
-import org.example.com.util.Validator;
-import org.example.com.util.FileManager;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Scanner;
 
@@ -99,7 +94,7 @@ public class LoanPrompt {
                     loadedDate.plusDays(remainingDays).toString(),
                     ""  // 아직 반납하지 않았으므로 빈 문자열
             );
-            BookFileManager.saveLoanRecord(loanRecord);
+            LoanManager.saveLoanRecord(loanRecord);
 
             System.out.printf("%s이 대출되었습니다. 현재 %d권 대출하였으며, 잔여 반납일은 %d일입니다.\n",
                     selectedBook.getTitle(), currentUser.getLoanCount(), remainingDays);
