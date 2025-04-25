@@ -39,8 +39,13 @@ public class ReturnPrompt {
             found = true;
             LocalDate dueDate = LocalDate.parse(loan.getDueDate());
             long remainingDays = ChronoUnit.DAYS.between(today, dueDate);
-            System.out.printf("ISBN: %s / 도서명: %s / 대출일: %s / 반납 예정일: %s / 남은 일수: %d일\n",
-                loan.getIsbn(), loan.getTitle(), loan.getLoanDate(), loan.getDueDate(), remainingDays);
+            if (remainingDays < 0) {
+                System.out.printf("ISBN: %s / 도서명: %s / 대출일: %s / 반납 예정일: %s / 연체 일수: %d일\n",
+                        loan.getIsbn(), loan.getTitle(), loan.getLoanDate(), loan.getDueDate(), -remainingDays);
+            } else {
+                System.out.printf("ISBN: %s / 도서명: %s / 대출일: %s / 반납 예정일: %s / 남은 일수: %d일\n",
+                        loan.getIsbn(), loan.getTitle(), loan.getLoanDate(), loan.getDueDate(), remainingDays);
+            }
         }
 
         if (!found) {
@@ -97,10 +102,8 @@ public class ReturnPrompt {
             FileManager.updateUser(currentUser);
             LoanManager.updateLoan(selectedLoan);
 
+            long overdueDays = LoanManager.maxOverdueDays(today, loans);
 
-            LocalDate loanDate = LocalDate.parse(DateManager.loadLoanDateFromFile().getValue());
-            long daysBetween = ChronoUnit.DAYS.between(loanDate, today);
-            int overdueDays = (int) Math.max(0, daysBetween - 13);
             System.out.printf("%s이 반납되었습니다. 현재 %d권 대출하였으며, 연체일은 %d일입니다.\n",
                     selectedLoan.getTitle(), currentUser.getLoanCount(), overdueDays);
 

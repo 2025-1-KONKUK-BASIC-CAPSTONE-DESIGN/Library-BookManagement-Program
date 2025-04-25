@@ -3,9 +3,9 @@ package org.example.com.prompt.user;
 import org.example.com.model.Date;
 import org.example.com.model.User;
 import org.example.com.util.DateManager;
+import org.example.com.util.LoanManager;
 import org.example.com.util.Validator;
 import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,15 +13,10 @@ import java.util.Scanner;
 
 public class DatePrompt {
     private final Scanner scanner = new Scanner(System.in);
-    private static LocalDate currentDate = LocalDate.now();
     private final User currentUser;
 
     public DatePrompt(User user) {
         this.currentUser = user;
-    }
-
-    public static LocalDate getCurrentDate() {
-        return currentDate;
     }
 
     public void start() {
@@ -47,12 +42,9 @@ public class DatePrompt {
                     return;
                 }
 
-                LocalDate loanDate = LocalDate.parse(current.toString());
-                long daysBetween = ChronoUnit.DAYS.between(loanDate, newDate);
-                int overdueDays = (int) Math.max(0, daysBetween - 13);
+                long overdueDays = LoanManager.maxOverdueDays(newDate, currentUser.getId());
 
                 DateManager.saveDateToFile(Date.parse(input));
-                currentDate = newDate;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
                 System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));

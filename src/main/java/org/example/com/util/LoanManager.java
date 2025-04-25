@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,5 +110,22 @@ public class LoanManager {
             System.out.println("❌ 대여 파일 저장 중 오류 발생");
             e.printStackTrace();
         }
+    }
+
+    public static Long maxOverdueDays(LocalDate today, List<Loan> loans) {
+        long overdueDays = 0;
+        for (Loan loan : loans) {
+            LocalDate dueDate = LocalDate.parse(loan.getDueDate());
+            long remainingDays = ChronoUnit.DAYS.between(today, dueDate);
+            if (remainingDays < 0) {
+                overdueDays = Math.max(overdueDays, -remainingDays);
+            }
+        }
+        return overdueDays;
+    }
+
+    public static Long maxOverdueDays(LocalDate today, String userid) {
+        List<Loan> loans = loadNotReturnedLoans(userid);
+        return maxOverdueDays(today, loans);
     }
 }

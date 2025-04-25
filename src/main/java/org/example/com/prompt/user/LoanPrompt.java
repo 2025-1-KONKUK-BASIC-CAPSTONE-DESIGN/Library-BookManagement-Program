@@ -7,8 +7,6 @@ import org.example.com.model.User;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
-import java.time.LocalDate;
-
 
 public class LoanPrompt {
     private final Scanner scanner = new Scanner(System.in);
@@ -56,8 +54,6 @@ public class LoanPrompt {
                 continue;
             }
 
-
-
             String isbnError = Validator.validateIsbnDetailed(isbn);
             if (!isbnError.isEmpty()) {
                 System.out.println(isbnError);
@@ -86,9 +82,6 @@ public class LoanPrompt {
             currentUser.setLoanCount(currentUser.getLoanCount() + 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
-            DateManager.saveLoanDateToFile(DateManager.loadDateFromFile());// ← 추가된 대출일 저장 코드
-
-
 
             long remainingDays = 13L; // 대출 기본 기간
             LocalDate loadedDate = DateManager.loadDateFromFile();
@@ -102,7 +95,7 @@ public class LoanPrompt {
                     selectedBook.getIsbn(),
                     selectedBook.getTitle(),
                     currentUser.getId(),
-                    loadedDate.toString(),
+                    loadedDate.toString(),  //대출일
                     loadedDate.plusDays(remainingDays).toString(),
                     ""  // 아직 반납하지 않았으므로 빈 문자열
             );
