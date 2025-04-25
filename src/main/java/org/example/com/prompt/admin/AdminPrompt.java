@@ -10,6 +10,7 @@ import org.example.com.prompt.book.BookPrompt;
 import org.example.com.prompt.user.DatePrompt;
 import org.example.com.util.BookFileManager;
 import org.example.com.util.DateManager;
+import org.example.com.util.LoanManager;
 // import org.example.com.util.DateFileManager;
 // import org.example.com.util.RentalFileManager;
 
@@ -54,7 +55,7 @@ public class AdminPrompt {
                         break;
                     case "대여":
                         filename = today + "-대여-데이터-파일.txt";
-                        DateManager.saveToFile(filename);
+                        LoanManager.saveToFile(filename);
                         break;
                 }
                 continue;
