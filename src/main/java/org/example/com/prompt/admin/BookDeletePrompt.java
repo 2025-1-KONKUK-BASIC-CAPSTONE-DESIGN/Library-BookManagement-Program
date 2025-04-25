@@ -26,7 +26,7 @@ public class BookDeletePrompt {
 
             if (!ISBN_PATTERN.matcher(isbn).matches() || !isbn.equals(isbn.trim())) {
                 System.out.println("!! ISBN을 입력해주세요. ISBN은 공백없는 13자리 숫자로 구성돼있습니다.");
-                continue;
+                return;
             }
 
             for (Book book : books) {
