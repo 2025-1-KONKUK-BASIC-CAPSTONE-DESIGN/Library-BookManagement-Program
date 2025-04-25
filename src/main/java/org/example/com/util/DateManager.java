@@ -27,4 +27,21 @@ public class DateManager {
             return false;
         }
     }
+
+
+    public static void saveToFile(String filePath) {
+        String resolvedPath = filePath.replace("{HOME}", System.getProperty("user.home"));
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(resolvedPath))) {
+            Date currentDate = loadDateFromFile();
+            if (currentDate != null) {
+                writer.write(currentDate.getValue());
+                writer.newLine();
+            }
+            System.out.println("✅ 날짜 파일 저장 완료: " + resolvedPath);
+        } catch (IOException e) {
+            System.out.println("❌ 날짜 파일 저장 중 오류 발생");
+            e.printStackTrace();
+        }
+    }
 }

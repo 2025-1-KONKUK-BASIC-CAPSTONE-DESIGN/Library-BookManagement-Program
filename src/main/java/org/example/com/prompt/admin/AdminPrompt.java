@@ -9,6 +9,7 @@ import org.example.com.model.User;
 import org.example.com.prompt.book.BookPrompt;
 import org.example.com.prompt.user.DatePrompt;
 import org.example.com.util.BookFileManager;
+import org.example.com.util.DateManager;
 // import org.example.com.util.DateFileManager;
 // import org.example.com.util.RentalFileManager;
 
@@ -47,18 +48,15 @@ public class AdminPrompt {
                         case "도서":
                             filename = today + "-도서-데이터-파일.txt";
                             BookFileManager.saveToFile(new File(filename).getAbsolutePath(), BookFileManager.loadBooks());
-                            System.out.println("✅ 도서 데이터 저장 완료 (" + filename + ")");
                             break;
-                        // case "날짜":
-                        //     filename = today + "-날짜-데이터-파일.txt";
-                        //     DateFileManager.saveToFile(filename);
-                        //     System.out.println("✅ 날짜 데이터 저장 완료 (" + filename + ")");
-                        //     break;
-                        // case "대여":
-                        //     filename = today + "-대여-데이터-파일.txt";
-                        //     RentalFileManager.saveToFile(filename);
-                        //     System.out.println("✅ 대여 데이터 저장 완료 (" + filename + ")");
-                        //     break;
+                         case "날짜":
+                             filename = today + "-날짜-데이터-파일.txt";
+                             DateManager.saveToFile(filename);
+                             break;
+                         case "대여":
+                             filename = today + "-대여-데이터-파일.txt";
+                             DateManager.saveToFile(filename);
+                             break;
                         default:
                             System.out.println("❌ 잘못된 항목입니다. '도서', '날짜', '대여' 중 하나를 입력하세요.");
                     }
