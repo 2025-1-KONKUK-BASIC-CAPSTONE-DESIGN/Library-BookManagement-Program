@@ -22,9 +22,9 @@ public class BookDeletePrompt {
 
         while (true) {
             System.out.print("deleteBookISBN: ");
-            String isbn = scanner.nextLine().trim();
+            String isbn = scanner.nextLine();
 
-            if (!ISBN_PATTERN.matcher(isbn).matches()) {
+            if (!ISBN_PATTERN.matcher(isbn).matches() || !isbn.equals(isbn.trim())) {
                 System.out.println("!! ISBN을 입력해주세요. ISBN은 공백없는 13자리 숫자로 구성돼있습니다.");
                 continue;
             }
