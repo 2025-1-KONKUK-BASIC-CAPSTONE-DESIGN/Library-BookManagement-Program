@@ -3,6 +3,10 @@ package org.example.com.prompt.user;
 import org.example.com.model.User;
 import java.util.Scanner;
 import org.example.com.prompt.book.BookPrompt;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import org.example.com.util.DateManager;
+
 
 public class UserPrompt {
     private final Scanner scanner = new Scanner(System.in);
@@ -21,7 +25,14 @@ public class UserPrompt {
             System.out.println("4. 날짜 변경");
             System.out.println("5. 종료");
             System.out.print("명령어를 입력하세요: ");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
+
+
+            if (!input.matches("^[1-5]$")) {
+                System.out.println("❌ 1~5 사이 숫자를 공백 없이 정확히 입력해주세요.");
+                continue;
+            }
+
 
             switch (input) {
                 case "1":
@@ -39,8 +50,6 @@ public class UserPrompt {
                 case "5":
                     System.out.println("프로그램을 종료합니다.");
                     return;
-                default:
-                    System.out.println(" 입력에 해당하는 명령어가 없습니다. 1~5 사이 숫자를 입력해주세요.");
             }
         }
     }

@@ -50,7 +50,7 @@ public class ReturnPrompt {
 
         while (true) {
             System.out.print("\n반납할 책의 ISBN을 입력해주세요 (취소: 0): ");
-            String isbn = scanner.nextLine().trim();
+            String isbn = scanner.nextLine();
 
             if (isbn.equals("0")) {
                 System.out.println("❗ 반납을 취소했습니다.");
@@ -97,7 +97,10 @@ public class ReturnPrompt {
             FileManager.updateUser(currentUser);
             LoanManager.updateLoan(selectedLoan);
 
-            int overdueDays = 0; //날짜 데이터 생성후 수정할것
+
+            LocalDate loanDate = LocalDate.parse(DateManager.loadLoanDateFromFile().getValue());
+            long daysBetween = ChronoUnit.DAYS.between(loanDate, today);
+            int overdueDays = (int) Math.max(0, daysBetween - 13);
             System.out.printf("%s이 반납되었습니다. 현재 %d권 대출하였으며, 연체일은 %d일입니다.\n",
                     selectedLoan.getTitle(), currentUser.getLoanCount(), overdueDays);
 

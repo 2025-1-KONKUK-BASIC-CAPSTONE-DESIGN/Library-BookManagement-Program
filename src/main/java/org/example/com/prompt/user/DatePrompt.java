@@ -5,7 +5,7 @@ import org.example.com.model.User;
 import org.example.com.util.DateManager;
 import org.example.com.util.Validator;
 import java.time.format.DateTimeParseException;
-
+import java.time.temporal.ChronoUnit;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +29,7 @@ public class DatePrompt {
 
         while (true) {
             System.out.print("변경할 날짜를 입력하세요 (YYYY-MM-DD): ");
-            String input = scanner.nextLine().trim();
+            String input = scanner.nextLine();
 
             // date 확인
             String dateError = Validator.validateDateDetailed(input);
@@ -38,15 +38,31 @@ public class DatePrompt {
                 continue;
             }
 
-            DateManager.saveDateToFile(Date.parse(input));
-            LocalDate newDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-            currentDate = newDate;
-            int overdueDays = 0; // 날짜 데이터 생성 후 수정할것
+            try {
+                LocalDate newDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate current = DateManager.loadDateFromFile();
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
-            System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));
-            System.out.printf("현재 %d권 대출하였으며, %d일 연체되었습니다.\n", currentUser.getLoanCount(), overdueDays);
-            return;
+                if (current == null) {
+                    System.err.println("current 데이터가 없습니다.");
+                    return;
+                }
+
+                LocalDate loanDate = LocalDate.parse(current.toString());
+                long daysBetween = ChronoUnit.DAYS.between(loanDate, newDate);
+                int overdueDays = (int) Math.max(0, daysBetween - 13);
+
+                DateManager.saveDateToFile(Date.parse(input));
+                currentDate = newDate;
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+                System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));
+                System.out.printf("현재 %d권 대출하였으며, %d일 연체되었습니다.\n",
+                        currentUser.getLoanCount(), overdueDays);
+                return;
+
+            } catch (DateTimeParseException e) {
+                System.out.println("❌ 존재하지 않는 날짜입니다. 다시 입력해주세요.");
+            }
         }
     }
 }
