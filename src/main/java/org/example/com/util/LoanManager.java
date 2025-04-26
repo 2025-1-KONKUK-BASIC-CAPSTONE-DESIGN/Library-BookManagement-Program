@@ -51,27 +51,8 @@ public class LoanManager {
         return list;
     }
 
-    public static void updateLoan(Loan updatedLoan) {
-        List<Loan> loans = new ArrayList<>();
+    public static void updateLoan(List<Loan> loans) {
         try {
-            Path path = Paths.get(LOAN_FILE_PATH);
-            if (!Files.exists(path)) Files.createFile(path);
-
-            List<String> lines = Files.readAllLines(path);
-            for (String line : lines) {
-                if (line.trim().isEmpty()) continue;
-                Loan loan = Loan.fromDataString(line);
-                if (loan == null) continue;
-
-                if (loan.getIsbn().equals(updatedLoan.getIsbn()) &&
-                    loan.getUserId().equals(updatedLoan.getUserId()) &&
-                    loan.getLoanDate().equals(updatedLoan.getLoanDate())) {
-                    loans.add(updatedLoan); // replace old record
-                } else {
-                    loans.add(loan);
-                }
-            }
-
             // Rewrite the entire file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOAN_FILE_PATH))) {
                 for (Loan loan : loans) {

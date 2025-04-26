@@ -70,14 +70,11 @@ public class ReturnPrompt {
             }
 
 
-            Loan selectedLoan = null;
+            Loan selectedLoan = loans.stream()
+                    .filter(l -> l.getIsbn().equals(isbn))
+                    .findFirst()
+                    .orElse(null);
             Book selectedBook;
-            for (Loan loan : loans) {
-                if (loan.getIsbn().equals(isbn)) {
-                    selectedLoan = loan;
-                    break;
-                }
-            }
 
             if (selectedLoan == null) {
                 System.out.println("!! 목록에 존재하지 않는 도서입니다.");
@@ -88,7 +85,7 @@ public class ReturnPrompt {
 
             selectedBook = books.stream()
                     .filter(book -> book.getIsbn().equals(isbn))
-                    .findAny().orElse(null);
+                    .findFirst().orElse(null);
 
             if (selectedBook == null
                     || selectedBook.getAvailableQuantity() == selectedBook.getTotalQuantity()) {
@@ -101,7 +98,7 @@ public class ReturnPrompt {
             currentUser.setLoanCount(currentUser.getLoanCount() - 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
-            LoanManager.updateLoan(selectedLoan);
+            LoanManager.updateLoan(loans);
 
             long overdueDays = LoanManager.maxOverdueDays(today, loans);
 
