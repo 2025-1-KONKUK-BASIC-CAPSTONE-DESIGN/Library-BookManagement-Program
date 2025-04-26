@@ -83,7 +83,6 @@ public class SignUpPrompt {
                 System.out.println(dateError);
                 continue;
             }
-
             break;
         }
 
