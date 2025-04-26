@@ -31,7 +31,7 @@ public class BookAddPrompt {
                 book.setAvailableQuantity(book.getAvailableQuantity() + 1);
                 book.setTotalQuantity(book.getTotalQuantity() + 1);
                 BookFileManager.saveAllBooks(books);
-                System.out.println("⚠️ 중복된 도서가 있습니다. 중복된 도서의 권수를 하나 추가 완료하였습니다.");
+                System.out.println("⚠️ 중복된 도서가 있습니다. 권수를 하나 추가 완료하였습니다.");
                 return;
             }
         }
@@ -41,8 +41,8 @@ public class BookAddPrompt {
         while (true) {
             System.out.print("도서명을 입력하세요: ");
             title = scanner.nextLine().trim();
-            if (title.isEmpty() || title.matches(".*\\p{Cntrl}&&[^\\r\\n\\t]\n.*")) {
-                System.out.println("❌ 도서명은 1자 이상이며, 제어문자를 포함할 수 없습니다.");
+            if (title.isEmpty() || title.contains("\n") || title.contains("\t")) {
+                System.out.println("❌ 도서명은 1자 이상이며, 탭이나 개행 문자를 포함할 수 없습니다.");
                 continue;
             }
             break;
@@ -72,9 +72,14 @@ public class BookAddPrompt {
             break;
         }
 
-        // 도서 객체 생성 및 저장
+        // 새 도서 생성 및 저장 시도
         Book newBook = new Book(title, author, publisher, isbn, 1);
-        BookFileManager.saveBook(newBook);
-        System.out.println("✅ 도서 추가가 완료되었습니다.");
+        boolean saved = BookFileManager.saveBook(newBook);
+
+        if (saved) {
+            System.out.println("✅ 도서 추가가 완료되었습니다.");
+        } else {
+            System.out.println("❌ 도서 추가에 실패했습니다. (50자 초과 또는 저장 오류)");
+        }
     }
 }
