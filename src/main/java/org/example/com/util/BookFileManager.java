@@ -1,3 +1,4 @@
+// src/main/java/org/example/com/util/BookFileManager.java
 package org.example.com.util;
 
 import org.example.com.model.Book;
@@ -12,10 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookFileManager {
-    // 도서 데이터 파일 경로
     private static final String BOOK_FILE_PATH = System.getProperty("user.home") + "/book_data.txt";
-    // 한 줄 최대 글자 수
-    private static final int MAX_LINE_LENGTH = 50;
+    private static final int MAX_LINE_LENGTH = 100;
 
     /**
      * 파일에서 모든 도서 정보를 읽어 리스트로 반환
@@ -45,21 +44,24 @@ public class BookFileManager {
 
     /**
      * 단일 도서를 파일 끝에 추가 저장
+     * @return 저장 성공 시 true, 실패 시 false
      */
-    public static void saveBook(Book book) {
+    public static boolean saveBook(Book book) {
         String data = book.toDataString();
         if (data.length() > MAX_LINE_LENGTH) {
             System.out.println("❌ 도서 정보가 너무 깁니다 (" + data.length() + "자). 최대 "
                 + MAX_LINE_LENGTH + "자 이내로 입력해주세요.");
-            return;
+            return false;
         }
         try (BufferedWriter writer = new BufferedWriter(
                  new FileWriter(BOOK_FILE_PATH, true))) {
             writer.write(data);
             writer.newLine();
+            return true;
         } catch (IOException e) {
             System.out.println("❌ 도서를 저장하는 중 오류 발생");
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -72,8 +74,8 @@ public class BookFileManager {
             for (Book book : books) {
                 String data = book.toDataString();
                 if (data.length() > MAX_LINE_LENGTH) {
-                    System.out.println("❌ 다음 도서 정보는 너무 깁니다 (" 
-                        + data.length() + "자), 저장에서 제외됩니다: " 
+                    System.out.println("❌ 다음 도서 정보는 너무 깁니다 ("
+                        + data.length() + "자), 저장에서 제외됩니다: "
                         + book.getTitle());
                     continue;
                 }
@@ -96,8 +98,8 @@ public class BookFileManager {
             for (Book book : books) {
                 String data = book.toDataString();
                 if (data.length() > MAX_LINE_LENGTH) {
-                    System.out.println("❌ 다음 도서 정보는 너무 깁니다 (" 
-                        + data.length() + "자), 저장에서 제외됩니다: " 
+                    System.out.println("❌ 다음 도서 정보는 너무 깁니다 ("
+                        + data.length() + "자), 저장에서 제외됩니다: "
                         + book.getTitle());
                     continue;
                 }
