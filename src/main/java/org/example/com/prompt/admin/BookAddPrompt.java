@@ -1,17 +1,17 @@
+// src/main/java/org/example/com/prompt/admin/BookAddPrompt.java
 package org.example.com.prompt.admin;
 
 import org.example.com.model.Book;
 import org.example.com.util.BookFileManager;
 import org.example.com.util.Validator;
-
-import java.nio.charset.Charset;
 import java.util.Scanner;
 
 public class BookAddPrompt {
+
     private final Scanner scanner = new Scanner(System.in);
 
     public void start() {
-        System.out.println("\n📗 도서 추가를 시작합니다.");
+        System.out.println("\n 도서 추가를 시작합니다.");
 
         System.out.print("도서명을 입력하세요: ");
         String title = scanner.nextLine().trim();
@@ -50,7 +50,12 @@ public class BookAddPrompt {
         }
 
         Book newBook = new Book(title, author, publisher, isbn, total);
-        BookFileManager.saveBook(newBook);
-        System.out.println("✅ 도서가 성공적으로 추가되었습니다.");
+        boolean saved = BookFileManager.saveBook(newBook);
+
+        if (saved) {
+            System.out.println("✅ 도서가 성공적으로 추가되었습니다.");
+        } else {
+            System.out.println("❌ 도서 추가에 실패했습니다. 다시 시도해주세요.");
+        }
     }
 }
