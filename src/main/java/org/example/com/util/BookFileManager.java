@@ -15,7 +15,7 @@ public class BookFileManager {
     // 도서 데이터 파일 경로
     private static final String BOOK_FILE_PATH = System.getProperty("user.home") + "/book_data.txt";
     // 한 줄 최대 글자 수
-    private static final int MAX_LINE_LENGTH = 100;
+    private static final int MAX_LINE_LENGTH = 50;
 
     /**
      * 파일에서 모든 도서 정보를 읽어 리스트로 반환
