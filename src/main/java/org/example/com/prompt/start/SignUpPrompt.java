@@ -78,7 +78,7 @@ public class SignUpPrompt {
             birth = scanner.nextLine().trim();
 
             // date 확인
-            String dateError = Validator.validateDateDetailed(birth);
+            String dateError = Validator.validateBirth(birth);
             if (!dateError.isEmpty()) {
                 System.out.println(dateError);
                 continue;

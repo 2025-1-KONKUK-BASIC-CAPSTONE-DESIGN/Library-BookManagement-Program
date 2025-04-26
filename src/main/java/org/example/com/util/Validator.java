@@ -25,6 +25,38 @@ public class Validator {
         return email.matches("^[a-zA-Z0-9]+@gmail\\.com$");
     }
 
+    public static String validateDate(String inputDate) {
+
+        // date 확인
+        String dateError = Validator.validateDateDetailed(inputDate);
+
+        if(!dateError.isEmpty()) {return dateError;}
+
+        // 현재 날짜와 비교
+        LocalDate current = DateManager.loadDateFromFile();
+
+        if (current != null && inputDate.compareTo(current.toString()) > 0) {
+            return "!! 오늘(" + current + ")보다 이전 날짜는 입력할 수 없습니다.";
+        }
+
+        return "";
+    }
+
+    public static String validateBirth(String inputBirth){
+        // date 확인
+        String dateError = Validator.validateDateDetailed(inputBirth);
+        if(!dateError.isEmpty()) {return dateError;}
+
+        // 현재 날짜와 비교
+        LocalDate current = DateManager.loadDateFromFile();
+
+        if (current != null && inputBirth.compareTo(current.toString()) < 0) {
+            return "!! 오늘(" + current + ")보다 이후 날짜는 입력할 수 없습니다.";
+        }
+
+        return "";
+    }
+
     public static String validateDateDetailed(String inputDate) {
         if (inputDate == null || inputDate.isBlank()) {
             return "!! 날짜를 입력해주세요.";
@@ -60,13 +92,6 @@ public class Validator {
         // 실제 존재하는 날짜인지 검사
         if (!isRealDate(year, month, day)) {
             return "!! 존재하지 않는 날짜입니다. 다시 확인해주세요.";
-        }
-
-        // 현재 날짜와 비교
-        LocalDate current = DateManager.loadDateFromFile();
-
-        if (current != null && inputDate.compareTo(current.toString()) < 0) {
-            return "!! 오늘(" + current + ")보다 이전 날짜는 입력할 수 없습니다.";
         }
 
         return ""; // 유효함

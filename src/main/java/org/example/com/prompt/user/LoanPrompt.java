@@ -54,12 +54,6 @@ public class LoanPrompt {
                 continue;
             }
 
-            String isbnError = Validator.validateIsbnDetailed(isbn);
-            if (!isbnError.isEmpty()) {
-                System.out.println(isbnError);
-                continue;
-            }
-
             Book selectedBook = null;
             for (Book book : books) {
                 if (book.getIsbn().equals(isbn)) {

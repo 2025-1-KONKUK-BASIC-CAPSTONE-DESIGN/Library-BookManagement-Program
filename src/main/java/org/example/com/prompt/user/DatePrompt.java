@@ -27,7 +27,8 @@ public class DatePrompt {
             String input = scanner.nextLine();
 
             // date 확인
-            String dateError = Validator.validateDateDetailed(input);
+            String dateError = Validator.validateDate(input);
+
             if (!dateError.isEmpty()) {
                 System.out.println(dateError);
                 continue;
