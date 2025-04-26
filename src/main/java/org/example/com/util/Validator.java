@@ -35,7 +35,7 @@ public class Validator {
         // 현재 날짜와 비교
         LocalDate current = DateManager.loadDateFromFile();
 
-        if (current != null && inputDate.compareTo(current.toString()) > 0) {
+        if (current != null && inputDate.compareTo(current.toString()) < 0) {
             return "!! 오늘(" + current + ")보다 이전 날짜는 입력할 수 없습니다.";
         }
 
@@ -50,7 +50,7 @@ public class Validator {
         // 현재 날짜와 비교
         LocalDate current = DateManager.loadDateFromFile();
 
-        if (current != null && inputBirth.compareTo(current.toString()) < 0) {
+        if (current != null && inputBirth.compareTo(current.toString()) > 0) {
             return "!! 오늘(" + current + ")보다 이후 날짜는 입력할 수 없습니다.";
         }
 
