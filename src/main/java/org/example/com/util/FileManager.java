@@ -75,13 +75,18 @@ public class FileManager {
 
     // ✅ 특정 사용자 1명만 갱신 저장
     public static void updateUser(User updatedUser) {
-        List<User> users = loadUsers();
+        List<User> users = loadUsers(); // 전체 사용자 목록 불러오기
+
+        // 기존 사용자 리스트에서 수정
         for (int i = 0; i < users.size(); i++) {
-            if (users.get(i).getId().equals(updatedUser.getId())) {
-                users.set(i, updatedUser);
+            User user = users.get(i);
+            if (user.getId().equals(updatedUser.getId())) {
+                users.set(i, updatedUser); // 같은 ID 찾으면 새로 갱신
                 break;
             }
         }
+
+        // 전체 사용자 리스트를 다시 저장
         saveAllUsers(users);
     }
 }
