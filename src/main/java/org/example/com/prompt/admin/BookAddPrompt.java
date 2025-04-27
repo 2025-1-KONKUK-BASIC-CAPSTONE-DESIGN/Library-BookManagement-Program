@@ -62,8 +62,13 @@ public class BookAddPrompt {
         while (true) {
             System.out.print("저자를 입력하세요: ");
             author = scanner.nextLine().trim();
+            int length = (int)author.codePoints().count();
             if (author.isEmpty() || author.contains("\n") || author.contains("\t")) {
                 System.out.println("❌ 저자는 1자 이상이며, 탭이나 개행 문자를 포함할 수 없습니다.");
+                continue;
+            }
+            if (length > 50) {
+                System.out.println("❌ 저자는 50자 이내로 입력해주세요. (현재 " + length + "자)");
                 continue;
             }
             break;
@@ -74,8 +79,13 @@ public class BookAddPrompt {
         while (true) {
             System.out.print("출판사를 입력하세요: ");
             publisher = scanner.nextLine().trim();
+            int length = (int)publisher.codePoints().count();
             if (publisher.isEmpty() || publisher.contains("\n") || publisher.contains("\t")) {
                 System.out.println("❌ 출판사는 1자 이상이며, 탭이나 개행 문자를 포함할 수 없습니다.");
+                continue;
+            }
+            if (length > 50) {
+                System.out.println("❌ 출판사는 50자 이내로 입력해주세요. (현재 " + length + "자)");
                 continue;
             }
             break;
