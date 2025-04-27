@@ -15,10 +15,10 @@ public class SignUpPrompt {
         String id;
         while (true) {
             System.out.print("ID를 입력하세요: ");
-            id = scanner.nextLine().trim();
+            id = scanner.nextLine();
 
             if (!Validator.isValidId(id)) {
-                System.out.println("❌ ID가 6자리 이상이며, 영문+숫자로만 구성되어야 합니다. 특수문자나 공백은 안됩니다.");
+                System.out.println("❌ ID가 6자리 이상, 16 이하이며, 영문+숫자로만 구성되어야 합니다. 특수문자나 공백은 안됩니다.");
                 continue;
             }
 
@@ -33,10 +33,10 @@ public class SignUpPrompt {
         String password;
         while (true) {
             System.out.print("비밀번호를 입력하세요: ");
-            password = scanner.nextLine().trim();
+            password = scanner.nextLine();
 
             if (!Validator.isValidPassword(password)) {
-                System.out.println("❌ 비밀번호는 8자리 이상이며, 대소문자/숫자/특수문자를 포함해야 합니다.");
+                System.out.println("❌ 비밀번호는 8자리 이상 16이하이며, 대소문자/숫자/특수문자를 포함해야 합니다.");
                 continue;
             }
             break;

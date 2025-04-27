@@ -10,11 +10,11 @@ import java.time.format.ResolverStyle;
 public class Validator {
 
     public static boolean isValidId(String id) {
-        return id.matches("^[a-zA-Z0-9]{6,}$");
+        return id.matches("^[a-zA-Z0-9]{6,16}$");
     }
 
     public static boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s:]).{8,}$");
+        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s:]).{8,16}$");
     }
 
     public static boolean isValidPhone(String phone) {
@@ -22,7 +22,7 @@ public class Validator {
     }
 
     public static boolean isValidEmail(String email) {
-        return email.matches("^[a-zA-Z0-9]+@gmail\\.com$");
+        return email.matches("^[a-zA-Z0-9]{1,16}@gmail\\.com$");
     }
 
     public static String validateDate(String inputDate) {
