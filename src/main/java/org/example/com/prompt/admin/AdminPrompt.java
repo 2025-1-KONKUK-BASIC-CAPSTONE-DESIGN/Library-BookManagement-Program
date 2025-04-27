@@ -42,7 +42,8 @@ public class AdminPrompt {
             if (input.matches("^4 (도서|날짜|대여)$")) {
                 String[] parts = input.split(" ");
                 String type = parts[1];
-                String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                LocalDate localToday = DateManager.loadDateFromFile();
+                String today = localToday == null ? "" : localToday.toString();
                 String filename;
                 switch (type) {
                     case "도서":
