@@ -41,7 +41,7 @@ public class BookAddPrompt {
         while (true) {
             System.out.print("도서명을 입력하세요 (최대 50자): ");
             title = scanner.nextLine().trim();
-            int length = title.codePointCount(0, title.length());
+            int length = (int)title.codePoints().count();
             if (length == 0) {
                 System.out.println("❌ 도서명은 최소 1자 이상이어야 합니다.");
                 continue;

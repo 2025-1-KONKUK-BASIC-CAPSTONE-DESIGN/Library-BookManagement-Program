@@ -19,11 +19,6 @@ public class BookFileManager {
      */
     public static boolean saveBook(Book book) {
         String data = book.toDataString();
-        if (data.length() > MAX_LINE_LENGTH) {
-            System.out.println("❌ 도서 정보가 너무 깁니다 (" + data.length() + "자). 최대 "
-                + MAX_LINE_LENGTH + "자 이내로 입력해주세요.");
-            return false;
-        }
         try (BufferedWriter writer = new BufferedWriter(
                  new FileWriter(BOOK_FILE_PATH, true))) {
             writer.write(data);
