@@ -1,6 +1,5 @@
 package org.example.com.util;
 
-import org.example.com.model.Date;
 import java.io.*;
 import java.time.LocalDate;
 
@@ -19,9 +18,9 @@ public class DateManager {
         }
     }
 
-    public static boolean saveDateToFile(Date date) {
+    public static boolean saveDateToFile(LocalDate date) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATE_FILE_PATH))) {
-            writer.write(date.getValue());
+            writer.write(date.toString());
             return true;
         } catch (IOException e) {
             return false;

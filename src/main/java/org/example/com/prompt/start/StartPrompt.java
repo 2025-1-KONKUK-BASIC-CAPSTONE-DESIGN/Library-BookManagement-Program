@@ -1,6 +1,5 @@
 package org.example.com.prompt.start;
 
-import org.example.com.model.Date;
 import org.example.com.model.User;
 import org.example.com.prompt.admin.AdminPrompt;
 import org.example.com.prompt.user.UserPrompt;
@@ -8,6 +7,7 @@ import org.example.com.util.DateManager;
 import org.example.com.util.FileManager;
 import org.example.com.util.Validator;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,6 +16,10 @@ public class StartPrompt {
     private final User admin = new User("admin", "admin", "010-0000-0000", "admin@gmail.com", "1931-05-10");
 
     public void start() {
+        if (DateManager.loadDateFromFile() == null) {
+            DateManager.saveDateToFile(LocalDate.now());    //만약 프로그램을 처음 실행시켰을 때 date_data.txt가 없다면 현재 컴퓨터 시간을 기준으로 생성
+        }
+
         while (true) {
             System.out.println("\n📚 StartPrompt");
             System.out.println("1. 회원가입");
@@ -54,7 +58,7 @@ public class StartPrompt {
                 continue;
             }
 
-            DateManager.saveDateToFile(Date.parse(input));
+            DateManager.saveDateToFile(LocalDate.parse(input));
             break;
         }
 

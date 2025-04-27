@@ -1,6 +1,5 @@
 package org.example.com.prompt.user;
 
-import org.example.com.model.Date;
 import org.example.com.model.User;
 import org.example.com.util.DateManager;
 import org.example.com.util.LoanManager;
@@ -43,7 +42,7 @@ public class DatePrompt {
                     return;
                 }
 
-                DateManager.saveDateToFile(Date.parse(input));
+                DateManager.saveDateToFile(LocalDate.parse(input));
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
                 System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));
