@@ -63,14 +63,8 @@ public class BookFileManager {
     public static void saveAllBooks(List<Book> books) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(BOOK_FILE_PATH))) {
             for (Book book : books) {
-                String data = book.toDataString();
-                if (data.length() > MAX_LINE_LENGTH) {
-                    System.out.println("❌ 다음 도서 정보는 너무 깁니다 (" 
-                        + data.length() + "자), 저장에서 제외됩니다: " 
-                        + book.getTitle());
-                    continue;
-                }
-                writer.write(data);
+                // ▶ 길이 검사 제거: 모든 도서를 그대로 기록
+                writer.write(book.toDataString());
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -86,14 +80,8 @@ public class BookFileManager {
         String resolvedPath = filePath.replace("{HOME}", System.getProperty("user.home"));
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(resolvedPath))) {
             for (Book book : books) {
-                String data = book.toDataString();
-                if (data.length() > MAX_LINE_LENGTH) {
-                    System.out.println("❌ 다음 도서 정보는 너무 깁니다 (" 
-                        + data.length() + "자), 저장에서 제외됩니다: " 
-                        + book.getTitle());
-                    continue;
-                }
-                writer.write(data);
+                // ▶ 길이 검사 제거: 모든 도서를 그대로 기록
+                writer.write(book.toDataString());
                 writer.newLine();
             }
             System.out.println("✅ 파일 저장 완료: " + resolvedPath);
