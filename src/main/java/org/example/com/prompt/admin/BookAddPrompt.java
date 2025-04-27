@@ -36,13 +36,22 @@ public class BookAddPrompt {
             }
         }
 
-        // 도서명 입력
+        // 도서명 입력 (50자 이내로 제한)
         String title;
         while (true) {
-            System.out.print("도서명을 입력하세요: ");
+            System.out.print("도서명을 입력하세요 (최대 50자): ");
             title = scanner.nextLine().trim();
-            if (title.isEmpty() || title.contains("\n") || title.contains("\t")) {
-                System.out.println("❌ 도서명은 1자 이상이며, 탭이나 개행 문자를 포함할 수 없습니다.");
+            int length = title.codePointCount(0, title.length());
+            if (length == 0) {
+                System.out.println("❌ 도서명은 최소 1자 이상이어야 합니다.");
+                continue;
+            }
+            if (length > 50) {
+                System.out.println("❌ 도서명은 50자 이내로 입력해주세요. (현재 " + length + "자)");
+                continue;
+            }
+            if (title.contains("\t") || title.contains("\r") || title.contains("\n")) {
+                System.out.println("❌ 도서명에 탭/개행 문자를 넣을 수 없습니다.");
                 continue;
             }
             break;
