@@ -14,10 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LoanManager {
-    private static final String LOAN_FILE_PATH = System.getProperty("user.home") + "/loan_data.txt";
+    private static final String LOAN_FILE_PATH = System.getProperty("user.home") + "/rental_data.txt";
+    private static List<Loan> loans = new ArrayList<>();
 
     public static void saveLoanRecord(String record) {
-        String loanPath = System.getProperty("user.home") + "/loan_data.txt";
+        String loanPath = System.getProperty("user.home") + "/rental_data.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(loanPath, true))) {
             writer.write(record);
             writer.newLine();
@@ -27,8 +28,8 @@ public class LoanManager {
         }
     }
 
-    public static List<Loan> loadNotReturnedLoans(String id) {
-        List<Loan> list = new ArrayList<>();
+    public static List<Loan> loadLoanRecord() {
+        loans = new ArrayList<>();  //loans 초기화
         try {
             Path path = Paths.get(LOAN_FILE_PATH);
             if (!Files.exists(path)) Files.createFile(path);
@@ -37,21 +38,21 @@ public class LoanManager {
             for (String line : lines) {
                 if (line.trim().isEmpty()) continue;
                 Loan record = Loan.fromDataString(line);
-
-                if (record == null) continue;
-                if (!record.getReturnDate().isEmpty()) continue;   //대출 완료한 경우는 패스
-                if (!record.getUserId().equals(id)) continue;   //현재 사용자의 대출 정보만 가져온다.
-
-                list.add(record);
+                loans.add(record);
             }
         } catch (IOException e) {
             System.out.println("❌ 대여 정보를 불러오는 중 오류 발생");
             e.printStackTrace();
         }
-        return list;
+        return loans;
+    }
+    public static List<Loan> loadNotReturnedLoans(String id) {
+        loans = loadLoanRecord();   //load Data update
+        return loans.stream().filter(loan -> loan.getUserId().equals(id)
+                && loan.getReturnDate().isEmpty()).toList();
     }
 
-    public static void updateLoan(List<Loan> loans) {
+    public static void updateLoan() {
         try {
             // Rewrite the entire file
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOAN_FILE_PATH))) {

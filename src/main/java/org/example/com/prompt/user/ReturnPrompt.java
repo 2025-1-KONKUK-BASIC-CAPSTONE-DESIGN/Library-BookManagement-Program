@@ -98,7 +98,7 @@ public class ReturnPrompt {
             currentUser.setLoanCount(currentUser.getLoanCount() - 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
-            LoanManager.updateLoan(loans);
+            LoanManager.updateLoan();
 
             long overdueDays = LoanManager.maxOverdueDays(today, loans);
 
