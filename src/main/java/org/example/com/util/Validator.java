@@ -14,7 +14,7 @@ public class Validator {
     }
 
     public static boolean isValidPassword(String password) {
-        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s:]).{8,16}$");
+        return password.matches("^(?!.*\\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\d\\s:]).{8,16}$");
     }
 
     public static boolean isValidPhone(String phone) {
