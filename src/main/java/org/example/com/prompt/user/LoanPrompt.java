@@ -84,7 +84,7 @@ public class LoanPrompt {
                 return;
             }
 
-            // 대출 기록을 loan_data.txt에 저장
+            // 대출 기록을 rental_data.txt에 저장
             String loanRecord = String.join("\t",
                     selectedBook.getIsbn(),
                     selectedBook.getTitle(),

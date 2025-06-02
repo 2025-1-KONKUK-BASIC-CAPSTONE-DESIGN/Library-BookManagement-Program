@@ -27,15 +27,6 @@ public class LoanManager {
             e.printStackTrace();
         }
     }
-    public static void saveLoanRecord(Loan loan) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOAN_FILE_PATH, true))) {
-            writer.write(loan.toFullDataString());
-            writer.newLine();
-        } catch (IOException e) {
-            System.out.println("❌ 대여 기록 저장 중 오류 발생");
-            e.printStackTrace();
-        }
-    }
 
     public static List<Loan> loadLoanRecord() {
         loans = new ArrayList<>();  //loans 초기화
