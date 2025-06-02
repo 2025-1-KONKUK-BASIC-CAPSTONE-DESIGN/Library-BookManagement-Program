@@ -27,6 +27,15 @@ public class LoanManager {
             e.printStackTrace();
         }
     }
+    public static void saveLoanRecord(Loan loan) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOAN_FILE_PATH, true))) {
+            writer.write(loan.toFullDataString());
+            writer.newLine();
+        } catch (IOException e) {
+            System.out.println("❌ 대여 기록 저장 중 오류 발생");
+            e.printStackTrace();
+        }
+    }
 
     public static List<Loan> loadLoanRecord() {
         loans = new ArrayList<>();  //loans 초기화
@@ -37,7 +46,25 @@ public class LoanManager {
             List<String> lines = Files.readAllLines(path);
             for (String line : lines) {
                 if (line.trim().isEmpty()) continue;
-                Loan record = Loan.fromDataString(line);
+                Loan record = Loan.fromFullDataString(line);
+                if (record.getReturnDate() != null && !record.getReturnDate().isEmpty()) {
+                    // 이미 반납한 경우: overdueDays는 고정값 유지, penalty만 1씩 감소
+                    int fixedOverdue = record.getOverdueDays();  // 저장된 고정 연체일
+                    int fixedPenalty = record.getPenaltyLeft();  // 저장된 패널티
+
+                    record.setOverdueDays(fixedOverdue);  // 그대로 유지
+                    if (fixedPenalty > 0) {
+                        record.setPenaltyLeft(fixedPenalty - 1);  // 하루 지나면 1 감소
+                    }
+
+                } else {
+                    // 반납하지 않은 경우: 현재 날짜 기준으로 실시간 계산
+                    int overdue = calculateOverdueDays(record);
+                    int penalty = calculatePenalty(overdue);
+                    record.setOverdueDays(overdue);
+                    record.setPenaltyLeft(penalty);
+                }
+
                 loans.add(record);
             }
         } catch (IOException e) {
@@ -53,20 +80,10 @@ public class LoanManager {
     }
 
     public static void updateLoan() {
-        try {
-            // Rewrite the entire file
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOAN_FILE_PATH))) {
-                for (Loan loan : loans) {
-                    writer.write(String.join("\t",
-                        loan.getIsbn(),
-                        loan.getTitle(),
-                        loan.getUserId(),
-                        loan.getLoanDate(),
-                        loan.getDueDate(),
-                        loan.getReturnDate() == null ? "" : loan.getReturnDate()
-                    ));
-                    writer.newLine();
-                }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(LOAN_FILE_PATH))) {
+            for (Loan loan : loans) {
+                writer.write(loan.toFullDataString());  // ✔ 전체 필드를 포함하여 저장
+                writer.newLine();
             }
         } catch (IOException e) {
             System.out.println("❌ 대여 기록 수정 중 오류 발생");
@@ -110,4 +127,25 @@ public class LoanManager {
         List<Loan> loans = loadNotReturnedLoans(userid);
         return maxOverdueDays(today, loans);
     }
+    //2차 추가
+    public static int calculateOverdueDays(Loan loan) {
+        LocalDate due = LocalDate.parse(loan.getDueDate());
+        LocalDate baseDate;
+
+        if (loan.getReturnDate() == null || loan.getReturnDate().isEmpty()) {
+            // 아직 반납 안 했으면 현재 날짜 기준으로 계산
+            baseDate = DateManager.loadDateFromFile();
+        } else {
+            baseDate = LocalDate.parse(loan.getReturnDate());
+        }
+
+        long days = ChronoUnit.DAYS.between(due, baseDate);
+        return (int) Math.max(0, days);
+    }
+// 2차 추가
+    public static int calculatePenalty(int overdueDays) {
+        int dailyPenalty = 1;
+        return overdueDays * dailyPenalty;
+    }
+
 }

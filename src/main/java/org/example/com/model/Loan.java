@@ -8,6 +8,10 @@ public class Loan {
     private final String dueDate;
     private String returnDate;
 
+    private int overdueDays;
+    private int penaltyLeft;
+    private boolean isExtended;
+
     public Loan(String isbn, String title, String userId, String loanDate, String dueDate, String returnDate) {
         this.isbn = isbn;
         this.title = title;
@@ -15,6 +19,10 @@ public class Loan {
         this.loanDate = loanDate;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
+        // 2차 추가 
+        this.overdueDays = 0;
+        this.penaltyLeft = 0;
+        this.isExtended = false;
     }
 
     public static Loan fromDataString(String line) {
@@ -30,6 +38,43 @@ public class Loan {
         String returnDate = (parts.length > 5) ? parts[5] : "";
         return new Loan(isbn, title, userId, loanDate, dueDate, returnDate);
     }
+    // 2차 추가 전체 데이터를 문자열로 반환하는 메서드
+    public String toFullDataString() {
+        return String.join("\t",
+                isbn,
+                title,
+                userId,
+                loanDate,
+                dueDate,
+                returnDate == null ? "" : returnDate,
+                String.valueOf(overdueDays),
+                String.valueOf(penaltyLeft),
+                isExtended ? "Y" : "N"
+        );
+    }
+    // 2차 추가 연체, 패널티, 연장 여부를 포함한 전체 데이터 파서
+    public static Loan fromFullDataString(String line) {
+        String[] parts = line.split("\t");
+        if (parts.length < 5) return null;  // 최소한 대출정보는 있어야 함
+
+        String isbn = parts[0];
+        String title = parts[1];
+        String userId = parts[2];
+        String loanDate = parts[3];
+        String dueDate = parts[4];
+        String returnDate = parts.length > 5 ? parts[5] : "";
+
+        int overdueDays = (parts.length > 6) ? Integer.parseInt(parts[6]) : 0;
+        int penaltyLeft = (parts.length > 7) ? Integer.parseInt(parts[7]) : 0;
+        boolean isExtended = (parts.length > 8) && parts[8].equalsIgnoreCase("Y");
+
+        Loan loan = new Loan(isbn, title, userId, loanDate, dueDate, returnDate);
+        loan.setOverdueDays(overdueDays);
+        loan.setPenaltyLeft(penaltyLeft);
+        loan.setExtended(isExtended);
+        return loan;
+    }
+
 
     public String getIsbn() {
         return isbn;
@@ -53,6 +98,30 @@ public class Loan {
 
     public String getReturnDate() {
         return returnDate;
+    }
+// 2차 추가
+    public int getOverdueDays() {
+        return overdueDays;
+    }
+
+    public int getPenaltyLeft() {
+        return penaltyLeft;
+    }
+
+    public boolean isExtended() {
+        return isExtended;
+    }
+
+    public void setOverdueDays(int overdueDays) {
+        this.overdueDays = overdueDays;
+    }
+
+    public void setPenaltyLeft(int penaltyLeft) {
+        this.penaltyLeft = penaltyLeft;
+    }
+
+    public void setExtended(boolean isExtended) {
+        this.isExtended = isExtended;
     }
 
     public void setReturnDate(String returnDate) {

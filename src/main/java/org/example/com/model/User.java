@@ -7,6 +7,8 @@ public class User {
     private String email;
     private String birth;
     private int loanCount = 0; // 대출 현황 기본값은 0권
+    //2차 추가
+    private int totalPenalty=0;
 
     public User(String id, String password, String phone, String email, String birth) {
         this.id = id;
@@ -29,6 +31,13 @@ public class User {
     public String getBirth() { return birth; }
     public int getLoanCount() { return loanCount; }
 
+
     // setter
     public void setLoanCount(int count) { this.loanCount = count; }
+    // 2차 추가
+    public int getTotalPenalty(){return totalPenalty;}
+    public void setTotalPenalty(int totalPenalty){
+        this.totalPenalty = totalPenalty;
+    }
+
 }

@@ -43,6 +43,9 @@ public class DatePrompt {
                 }
 
                 DateManager.saveDateToFile(LocalDate.parse(input));
+//  2차 추가 날짜가 변경되었으니 연체/패널티 정보 갱신
+                LoanManager.loadLoanRecord();
+                LoanManager.updateLoan();
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
                 System.out.printf("날짜가 %s로 변경되었습니다.\n", newDate.format(formatter));
