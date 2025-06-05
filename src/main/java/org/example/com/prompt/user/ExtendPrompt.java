@@ -16,6 +16,11 @@ public class ExtendPrompt {
 
     public void start() {
         while(true) {
+            if(currentUser.isOverdueDays() == true) {
+                System.out.println("!!연체 상태입니다. 도서를 연장할 수 없습니다.");
+                return;
+            }
+
             if(currentUser.getTotalPenalty() > 0) {
                 System.out.println("!!패널티 상태입니다. 도서를 연장할 수 없습니다.");
                 return;

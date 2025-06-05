@@ -149,4 +149,13 @@ public class LoanManager {
         return overdueDays * dailyPenalty;
     }
 
+    public static boolean hasOverdueLoan(String userId) {
+        List<Loan> userLoans = loadNotReturnedLoans(userId);
+        for (Loan loan : userLoans) {
+            if (loan.getOverdueDays() > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

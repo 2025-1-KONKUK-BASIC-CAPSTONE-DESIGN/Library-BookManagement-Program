@@ -39,5 +39,7 @@ public class User {
     public void setTotalPenalty(int totalPenalty){
         this.totalPenalty = totalPenalty;
     }
+    public boolean isOverdueDays() {
+        return LoanManager.hasOverdueLoan(this.id);}
 
 }
