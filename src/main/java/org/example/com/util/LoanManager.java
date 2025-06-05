@@ -16,6 +16,7 @@ import java.util.List;
 public class LoanManager {
     private static final String LOAN_FILE_PATH = System.getProperty("user.home") + "/rental_data.txt";
     private static List<Loan> loans = new ArrayList<>();
+    private static List<Loan> userLoanRecord;
 
     public static void saveLoanRecord(String record) {
         String loanPath = System.getProperty("user.home") + "/rental_data.txt";
@@ -64,6 +65,15 @@ public class LoanManager {
         }
         return loans;
     }
+
+    public static List<Loan> getUserLoanRecord(String id) {
+        loans = loadLoanRecord().stream()
+                .filter(loan -> loan.getUserId().equals(id))
+                .toList();
+        userLoanRecord = loans;
+        return loans;
+    }
+
     public static List<Loan> loadNotReturnedLoans(String id) {
         loans = loadLoanRecord();   //load Data update
         return loans.stream().filter(loan -> loan.getUserId().equals(id)
