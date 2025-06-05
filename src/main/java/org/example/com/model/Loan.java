@@ -5,7 +5,7 @@ public class Loan {
     private final String title;
     private final String userId;
     private final String loanDate;
-    private final String dueDate;
+    private String dueDate;
     private String returnDate;
 
     private int overdueDays;
@@ -110,6 +110,10 @@ public class Loan {
 
     public boolean isExtended() {
         return isExtended;
+    }
+
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
     }
 
     public void setOverdueDays(int overdueDays) {

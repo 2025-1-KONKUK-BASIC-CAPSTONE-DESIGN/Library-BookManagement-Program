@@ -74,6 +74,21 @@ public class LoanManager {
         return loans;
     }
 
+    public static boolean isIsbnExists(String isbn) {
+        // 대출중인 loans 중에서 (반납일이 없는 경우) 해당 isbn이 존재하는지 확인
+        List<Loan> userNowLoans = userLoanRecord.stream()
+                .filter(loan -> loan.getReturnDate().isEmpty())
+                .toList();
+
+        return userNowLoans.stream().anyMatch(loan -> loan.getIsbn().equals(isbn));
+    }
+
+    public static List<Loan> getUserNowLoanRecord() {
+        return userLoanRecord.stream()
+                .filter(loan -> loan.getReturnDate().isEmpty())
+                .toList();
+    }
+
     public static List<Loan> loadNotReturnedLoans(String id) {
         loans = loadLoanRecord();   //load Data update
         return loans.stream().filter(loan -> loan.getUserId().equals(id)
