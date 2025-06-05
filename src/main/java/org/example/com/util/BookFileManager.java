@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -109,7 +110,11 @@ public class BookFileManager {
     public static String generateNextBookId() {
         List<Book> books = BookFileManager.loadBooks();
         // 현재 연도 2자리 구하기
-        int year = java.time.LocalDate.now().getYear() % 100;
+        LocalDate date = DateManager.loadDateFromFile();
+        if (date == null) {
+            throw new IllegalStateException("날짜 파일을 불러올 수 없습니다.");
+        }
+        int year = date.getYear() % 100;
         String yearStr = String.format("%02d", year);
 
         int maxId = 0;
