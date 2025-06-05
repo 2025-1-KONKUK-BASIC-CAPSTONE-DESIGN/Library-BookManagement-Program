@@ -29,8 +29,8 @@ public class UserPrompt {
             String input = scanner.nextLine();
 
 
-            if (!input.matches("^[1-5]$")) {
-                System.out.println("❌ 1~5 사이 숫자를 공백 없이 정확히 입력해주세요.");
+            if (!input.matches("^[1-6]$")) {
+                System.out.println("❌ 1~6 사이 숫자를 공백 없이 정확히 입력해주세요.");
                 continue;
             }
 
