@@ -48,6 +48,9 @@ public class UserPrompt {
                     new DatePrompt(currentUser).start();
                     break;
                 case "5":
+                    new ExtendPrompt(currentUser).start();
+                    break;
+                case "6":
                     System.out.println("프로그램을 종료합니다.");
                     return;
             }
