@@ -91,7 +91,10 @@ public class LoanPrompt {
                     currentUser.getId(),
                     loadedDate.toString(),  //대출일
                     loadedDate.plusDays(remainingDays).toString(),
-                    ""  // 아직 반납하지 않았으므로 빈 문자열
+                    "",  // 아직 반납하지 않았으므로 빈 문자열,
+                    "0",
+                    "0",
+                    "N"
             );
             LoanManager.saveLoanRecord(loanRecord);
 
