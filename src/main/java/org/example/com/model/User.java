@@ -1,4 +1,5 @@
 package org.example.com.model;
+import org.example.com.util.LoanManager;
 
 public class User {
     private String id;
@@ -39,7 +40,8 @@ public class User {
     public void setTotalPenalty(int totalPenalty){
         this.totalPenalty = totalPenalty;
     }
-    public boolean isOverdueDays() {
-        return LoanManager.hasOverdueLoan(this.id);}
 
+    public boolean isOverdueDays() {
+        return LoanManager.isUserOverdue(this.id);
+    }
 }

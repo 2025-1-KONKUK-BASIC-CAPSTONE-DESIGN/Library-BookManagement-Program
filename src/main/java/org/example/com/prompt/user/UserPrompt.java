@@ -23,7 +23,8 @@ public class UserPrompt {
             System.out.println("2. 대출");
             System.out.println("3. 반납");
             System.out.println("4. 날짜 변경");
-            System.out.println("5. 종료");
+            System.out.println("5. 연장 하기");
+            System.out.println("6. 종료");
             System.out.print("명령어를 입력하세요: ");
             String input = scanner.nextLine();
 
