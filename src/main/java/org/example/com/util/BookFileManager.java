@@ -85,4 +85,52 @@ public class BookFileManager {
             e.printStackTrace();
         }
     }
+
+    public static boolean isIsbnExists(String isbn) {
+        List<Book> books = loadBooks();
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isBookIdExists(String bookId) {
+        List<Book> books = loadBooks();
+        for (Book book : books) {
+            if (book.getBookId().equals(bookId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String generateNextBookId() {
+        List<Book> books = BookFileManager.loadBooks();
+        // 현재 연도 2자리 구하기
+        int year = java.time.LocalDate.now().getYear() % 100;
+        String yearStr = String.format("%02d", year);
+
+        int maxId = 0;
+        // 현재 연도에 해당하는 최대 순번 찾기
+        for (Book book : books) {
+            String bookId = book.getBookId();
+            if (bookId != null && bookId.startsWith("LIB" + yearStr + "-")) {
+                String idPart = bookId.substring(7); // "LIByy-" 다음 5자리
+                try {
+                    int id = Integer.parseInt(idPart);
+                    if (id > maxId) maxId = id;
+                } catch (NumberFormatException e) {
+                    // 무시
+                }
+            }
+        }
+        // 최대값 제한 체크
+        if (maxId >= 99999) {
+            throw new IllegalStateException("장서번호가 LIB" + yearStr + "-99999를 초과할 수 없습니다.");
+        }
+        int nextId = maxId + 1;
+        return String.format("LIB%s-%05d", yearStr, nextId);
+    }
 }

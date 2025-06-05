@@ -30,8 +30,9 @@ public class BookAddPrompt {
             if (book.getIsbn().equals(isbn)) {
                 book.setAvailableQuantity(book.getAvailableQuantity() + 1);
                 book.setTotalQuantity(book.getTotalQuantity() + 1);
+                String newBookId = BookFileManager.generateNextBookId();
                 BookFileManager.saveAllBooks(books);
-                System.out.println("⚠️ 중복된 도서가 있습니다. 권수를 하나 추가 완료하였습니다.");
+                System.out.println("⚠️ 중복된 도서가 있습니다. 새 장서관리번호 " + newBookId + "부여 및 권수를 하나 추가 완료하였습니다.");
                 return;
             }
         }
@@ -91,14 +92,23 @@ public class BookAddPrompt {
             break;
         }
 
-        // 새 도서 생성 및 저장 시도
-        Book newBook = new Book(title, author, publisher, isbn, 1);
+        bookAdd(isbn, title, author, publisher);
+    }
+
+    public void bookAdd(String isbn, String title, String author, String publisher) {
+        // 장서관리번호 생성
+        String bookId = BookFileManager.generateNextBookId();
+
+        // Book 객체 생성
+        Book newBook = new Book(title, author, publisher, isbn, 1, bookId);
+
+        // 저장
         boolean saved = BookFileManager.saveBook(newBook);
 
         if (saved) {
             System.out.println("✅ 도서 추가가 완료되었습니다.");
         } else {
-            System.out.println("❌ 도서 추가에 실패했습니다. (50자 초과 또는 저장 오류)");
+            System.out.println("❌ 도서 추가에 실패했습니다. (저장 오류)");
         }
     }
 }
