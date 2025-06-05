@@ -24,20 +24,25 @@ public class BookDeletePrompt {
             System.out.print("deleteBookISBN: ");
             String isbn = scanner.nextLine();
 
-            if (!BookFileManager.isIsbnExists(isbn.trim())) {
+            if (!ISBN_PATTERN.matcher(isbn.trim()).matches()) {
                 System.out.println("!! ISBN을 입력해주세요. ISBN은 공백없는 13자리 숫자로 구성돼있습니다.");
                 continue;
             }
 
+            if (!BookFileManager.isIsbnExists(isbn.trim())) {
+                System.out.println("❌ 해당 ISBN에 해당하는 도서가 없습니다.");
+                return;
+            }
+
             for (Book book : books) {
-                if (book.getIsbn().equals(isbn)) {
+                if (book.getIsbn().equals(isbn.trim())) {
                     targetBook = book;
                     break;
                 }
             }
 
             if (targetBook == null) {
-                System.out.println("❌ 해당 ISBN에 해당하는 도서가 없습니다.");
+                System.out.println("❌ 시스템 오류: 해당 ISBN 도서 객체를 찾을 수 없습니다.");
                 return;
             }
 
