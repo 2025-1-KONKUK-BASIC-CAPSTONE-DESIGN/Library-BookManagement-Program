@@ -18,8 +18,7 @@ public class LoanPrompt {
 
     public void start() {
 
-        if (currentUser.getLoanCount() >= 5) {
-            System.out.println("❌ 대출 권한 초과: 최대 5권까지 대출할 수 있습니다.");
+        if(checkLoan()){
             return;
         }
 
@@ -103,4 +102,25 @@ public class LoanPrompt {
             return;
         }
     }
+
+    public boolean checkLoan(){
+        if(currentUser == null){
+            System.out.println("유저가 없는 이상 상황 발생");
+        }
+        
+        if(currentUser.getLoanCount() >= 5){
+            System.out.println("❌ 최대 5권까지 대출할 수 있습니다. 사용자 프롬프트로 돌아갑니다.");
+        }
+
+        if(currentUser.isOverdueDays() == true){
+            System.out.println("❌ 현재 연체 상태여서 대출할 수 없습니다. 사용자 프롬프트로 돌아갑니다.");
+        }
+
+        if(currentUser.getTotalPenalty() >= 0){
+            System.out.println("❌ 현재 패널티 상태여서 대출할 수 없습니다. 사용자 프롬프트로 돌아갑니다.");
+        }
+
+        return false;
+    }
+
 }

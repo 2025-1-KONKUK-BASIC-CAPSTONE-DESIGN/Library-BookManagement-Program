@@ -143,6 +143,7 @@ public class LoanManager {
         List<Loan> loans = loadNotReturnedLoans(userid);
         return maxOverdueDays(today, loans);
     }
+
     //2차 추가
     public static int calculateOverdueDays(Loan loan) {
         LocalDate due = LocalDate.parse(loan.getDueDate());
@@ -158,6 +159,7 @@ public class LoanManager {
         long days = ChronoUnit.DAYS.between(due, baseDate);
         return (int) Math.max(0, days);
     }
+
 // 2차 추가
     public static int calculatePenalty(int overdueDays) {
         int dailyPenalty = 1;
@@ -173,5 +175,4 @@ public class LoanManager {
         }
         return false;
     }
-
 }
