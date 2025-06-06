@@ -45,6 +45,8 @@ public class LoanPrompt {
                 bookMap.put(isbn, newBook);
                 availableMap.put(isbn, book.getAvailableQuantity());
             } else {
+                Book agg = bookMap.get(isbn);
+                agg.setTotalQuantity(agg.getTotalQuantity() + book.getTotalQuantity());
                 availableMap.put(isbn, availableMap.get(isbn) + book.getAvailableQuantity());
             }
         }
@@ -116,6 +118,7 @@ public class LoanPrompt {
             // 대출 기록을 loan_data.txt에 저장
             String loanRecord = String.join("\t",
                     selectedBook.getIsbn(),
+                    selectedBook.getBookId(),
                     selectedBook.getTitle(),
                     currentUser.getId(),
                     loadedDate.toString(),  //대출일
