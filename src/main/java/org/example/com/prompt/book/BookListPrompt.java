@@ -15,15 +15,16 @@ public class BookListPrompt {
         }
 
         System.out.println("\n📚 전체 도서 목록:");
-        System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20s\t%-15s\n", "ISBN", "도서명", "저자", "출판사", "대출 가능 수량", "전체 수량");
+        System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20s\t%-15s\t%11s\n", "ISBN", "도서명", "저자", "출판사", "대출 가능 수량", "전체 수량", "장서관리번호");
         for (Book book : books) {
-            System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20d\t%-15d\n",
+            System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20d\t%-15d\t%11s\n",
                 book.getIsbn(),
                 book.getTitle(),
                 book.getAuthor(),
                 book.getPublisher(),
                 book.getAvailableQuantity(),
-                book.getTotalQuantity()
+                book.getTotalQuantity(),
+                book.getBookId()
             );
         }
     }
@@ -38,16 +39,17 @@ public class BookListPrompt {
 
         System.out.println("\n📚 대출 가능 도서 목록:");
 
-        System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20s\t%-15s\n", "ISBN", "도서명", "저자", "출판사", "대출 가능 수량", "전체 수량");
+        System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20s\t%-15s\t%11s\n", "ISBN", "도서명", "저자", "출판사", "대출 가능 수량", "전체 수량", "장서관리번호");
         for (Book book : books) {
             if (book.getAvailableQuantity()>0) {
-                System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20d\t%-15d\n",
+                System.out.printf("%-15s\t%-30s\t%-15s\t%-15s\t%-20d\t%-15d\t%11s\n",
                         book.getIsbn(),
                         book.getTitle(),
                         book.getAuthor(),
                         book.getPublisher(),
                         book.getAvailableQuantity(),
-                        book.getTotalQuantity()
+                        book.getTotalQuantity(),
+                        book.getBookId()
                 );
             }
         }
