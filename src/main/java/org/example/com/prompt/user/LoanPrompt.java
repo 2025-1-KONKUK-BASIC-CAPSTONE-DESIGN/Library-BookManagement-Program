@@ -104,6 +104,7 @@ public class LoanPrompt {
             }
 
             selectedBook.setAvailableQuantity(selectedBook.getAvailableQuantity() - 1);
+            selectedBook.setTotalQuantity(selectedBook.getTotalQuantity() - 1);
             currentUser.setLoanCount(currentUser.getLoanCount() + 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
