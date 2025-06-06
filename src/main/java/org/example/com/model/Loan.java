@@ -31,7 +31,7 @@ public class Loan {
         String loanDate = parts[4];
         String dueDate = parts[5];
         String returnDate = (parts.length > 6) ? parts[6] : "";
-        return new Loan(isbn, title, userId, loanDate, dueDate, returnDate, bookId);
+        return new Loan(isbn, bookId, title, userId, loanDate, dueDate, returnDate);
     }
 
     public String getIsbn() {
