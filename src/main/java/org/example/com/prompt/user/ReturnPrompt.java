@@ -63,36 +63,29 @@ public class ReturnPrompt {
                 return;
             }
 
-            String isbnError = Validator.validateIsbnDetailed(isbn);
-            if (!isbnError.isEmpty()) {
-                System.out.println(isbnError);
-                continue;
-            }
-
-
             Loan selectedLoan = loans.stream()
                     .filter(l -> l.getIsbn().equals(isbn))
                     .findFirst()
                     .orElse(null);
-            Book selectedBook;
 
             if (selectedLoan == null) {
                 System.out.println("!! 목록에 존재하지 않는 도서입니다.");
                 continue;
             }
 
-            selectedLoan.setReturnDate(today.toString());   //대출일 지정
+            String bookId = selectedLoan.getBookId();
 
-            selectedBook = books.stream()
-                    .filter(book -> book.getIsbn().equals(isbn))
-                    .findFirst().orElse(null);
+            Book selectedBook = books.stream()
+                    .filter(book -> book.getBookId().equals(bookId))
+                    .findFirst()
+                    .orElse(null);
 
-            if (selectedBook == null
-                    || selectedBook.getAvailableQuantity() == selectedBook.getTotalQuantity()) {
-                System.out.println("!! 고유하지 않은 ISBN입니다.");
+            if (selectedBook == null) {
+                System.out.println("!! 목록에 존재하지 않는 도서입니다.");
                 continue;
             }
 
+            selectedLoan.setReturnDate(today.toString());   //대출일 지정
 
             selectedBook.setAvailableQuantity(selectedBook.getAvailableQuantity() + 1);
             currentUser.setLoanCount(currentUser.getLoanCount() - 1);
