@@ -45,8 +45,6 @@ public class LoanPrompt {
                 bookMap.put(isbn, newBook);
                 availableMap.put(isbn, book.getAvailableQuantity());
             } else {
-                Book agg = bookMap.get(isbn);
-                agg.setTotalQuantity(agg.getTotalQuantity() + book.getTotalQuantity());
                 availableMap.put(isbn, availableMap.get(isbn) + book.getAvailableQuantity());
             }
         }
