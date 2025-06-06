@@ -75,7 +75,8 @@ public class Book {
         return String.join("\t",
                 title, author, publisher, isbn,
                 String.valueOf(availableQuantity),
-                String.valueOf(totalQuantity)
+                String.valueOf(totalQuantity),
+                bookId
         );
     }
 
