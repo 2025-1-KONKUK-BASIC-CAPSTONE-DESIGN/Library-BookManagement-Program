@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookFileManager {
-    private static final String BOOK_FILE_PATH = System.getProperty("user.home") + "/book_data.txt";
+    private static final String BOOK_FILE_PATH = System.getProperty("user.home") + "/book_data2.txt";
     // 한 줄(도서 데이터) 최대 글자 수
     private static final int MAX_LINE_LENGTH = 50;
 

@@ -5,7 +5,9 @@ import org.example.com.util.*;
 import org.example.com.model.User;
 
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class LoanPrompt {
@@ -25,9 +27,38 @@ public class LoanPrompt {
 
         List<Book> books = BookFileManager.loadBooks();
 
+        // ISBN 기준 집계
+        Map<String, Book> bookMap = new LinkedHashMap<>();
+        Map<String, Integer> availableMap = new LinkedHashMap<>();
+
+        for (Book book : books) {
+            String isbn = book.getIsbn();
+            if (!bookMap.containsKey(isbn)) {
+                Book newBook = new Book(
+                        book.getTitle(),
+                        book.getAuthor(),
+                        book.getPublisher(),
+                        book.getIsbn(),
+                        book.getTotalQuantity(),
+                        null // bookId는 불필요
+                );
+                bookMap.put(isbn, newBook);
+                availableMap.put(isbn, book.getAvailableQuantity());
+            } else {
+                Book agg = bookMap.get(isbn);
+                agg.setTotalQuantity(agg.getTotalQuantity() + book.getTotalQuantity());
+                availableMap.put(isbn, availableMap.get(isbn) + book.getAvailableQuantity());
+            }
+        }
+
+        // 최종적으로 availableQuantity를 세팅
+        for (String isbn : bookMap.keySet()) {
+            bookMap.get(isbn).setAvailableQuantity(availableMap.get(isbn));
+        }
+
         boolean hasAvailable = false;
         System.out.println("\n📚 대출 가능한 도서 목록:");
-        for (Book book : books) {
+        for (Book book : bookMap.values()) {
             if (book.getAvailableQuantity() > 0) {
                 hasAvailable = true;
                 System.out.printf("- %s / 저자: %s / ISBN: %s / 남은 수량: %d\n",
