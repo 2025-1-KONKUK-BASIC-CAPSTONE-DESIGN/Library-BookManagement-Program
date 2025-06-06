@@ -5,10 +5,8 @@ import org.example.com.util.*;
 import org.example.com.model.User;
 
 import java.time.LocalDate;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LoanPrompt {
     private final Scanner scanner = new Scanner(System.in);
@@ -84,26 +82,26 @@ public class LoanPrompt {
                 continue;
             }
 
-            Book selectedBook = null;
-            for (Book book : books) {
-                if (book.getIsbn().equals(isbn)) {
-                    selectedBook = book;
-                    break;
-                }
-            }
+            boolean exists = books.stream()
+                    .anyMatch(book -> book.getIsbn().equals(isbn));
 
-            if (selectedBook == null) {
+            if (!exists) {
                 System.out.println("!! 목록에 존재하지 않는 도서입니다.");
                 continue;
             }
 
-            if (selectedBook.getAvailableQuantity() <= 0) {
+            List<Book> availableBooks = books.stream()
+                    .filter(book -> book.getIsbn().equals(isbn) && book.getAvailableQuantity() > 0)
+                    .toList();
+
+            if (availableBooks.isEmpty()) {
                 System.out.println("❌ 해당 도서는 현재 대출이 불가능합니다.");
                 continue;
             }
 
+            Book selectedBook = availableBooks.get(new Random().nextInt(availableBooks.size()));
+
             selectedBook.setAvailableQuantity(selectedBook.getAvailableQuantity() - 1);
-            selectedBook.setTotalQuantity(selectedBook.getTotalQuantity() - 1);
             currentUser.setLoanCount(currentUser.getLoanCount() + 1);
             BookFileManager.saveAllBooks(books);
             FileManager.updateUser(currentUser);
