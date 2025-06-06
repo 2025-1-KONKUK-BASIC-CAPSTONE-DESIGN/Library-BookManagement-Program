@@ -49,9 +49,10 @@ public class BookDeletePrompt {
             System.out.println("제목: " + targetBook.getTitle());
             System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
             System.out.println("장서관리번호");
-            List<String> bookIds = targetBook.getBookIds();
-            for (String bookId : bookIds) {
-                System.out.println(bookId);
+            for (Book book : books) {
+                if (book.getIsbn().equals(targetBook.getIsbn())) {
+                    System.out.println(book.getBookId());
+                }
             }
             break;
         }
@@ -68,32 +69,45 @@ public class BookDeletePrompt {
             }
 
             // 해당 도서의 장서관리번호에 존재하는지 체크
-            List<String> bookIds = targetBook.getBookIds();
             if (!BookFileManager.isBookIdExists(bookIdInput)) {
                 System.out.println("!! 해당 도서에는 입력한 장서관리번호가 없습니다. 다시 입력해주세요.");
                 // 도서 정보 재출력
                 System.out.println("제목: " + targetBook.getTitle());
                 System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
                 System.out.println("장서관리번호");
-                for (String bookId : bookIds) {
-                    System.out.println(bookId);
+                for (Book book : books) {
+                    if (book.getIsbn().equals(targetBook.getIsbn())) {
+                        System.out.println(book.getBookId());
+                    }
                 }
                 continue;
             }
 
-            // 삭제 처리
-            bookIds.remove(bookIdInput);
-            targetBook.setAvailableQuantity(targetBook.getAvailableQuantity() - 1);
-            targetBook.setTotalQuantity(targetBook.getTotalQuantity() - 1);
-
-            // 모든 장서관리번호가 삭제되면 도서 자체도 목록에서 제거
-            if (bookIds.isEmpty()) {
-                books.remove(targetBook);
+            Book bookToRemove = null;
+            for (Book book : books) {
+                if (book.getBookId().equals(bookIdInput)) {
+                    bookToRemove = book;
+                    break;
+                }
             }
 
-            BookFileManager.saveAllBooks(books);
-            System.out.println("‘도서 삭제가 완료되었습니다.’");
-            return;
+            if (bookToRemove != null) {
+                books.remove(bookToRemove);
+
+                boolean isbnExists = false;
+                for (Book book : books) {
+                    if (book.getIsbn().equals(targetBook.getIsbn())) {
+                        isbnExists = true;
+                        break;
+                    }
+                }
+
+                BookFileManager.saveAllBooks(books);
+                System.out.println("‘도서 삭제가 완료되었습니다.’");
+                return;
+            } else {
+                System.out.println("!! 해당 장서관리번호를 가진 도서가 없습니다.");
+            }
         }
     }
 }
