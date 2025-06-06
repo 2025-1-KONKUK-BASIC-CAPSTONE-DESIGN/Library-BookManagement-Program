@@ -27,7 +27,6 @@ public class LoanPrompt {
 
         List<Book> books = BookFileManager.loadBooks();
 
-        // ISBN 기준 집계
         Map<String, Book> bookMap = new LinkedHashMap<>();
         Map<String, Integer> availableMap = new LinkedHashMap<>();
 
@@ -40,8 +39,9 @@ public class LoanPrompt {
                         book.getPublisher(),
                         book.getIsbn(),
                         book.getTotalQuantity(),
-                        null // bookId는 불필요
+                        null
                 );
+                newBook.setAvailableQuantity(book.getAvailableQuantity());
                 bookMap.put(isbn, newBook);
                 availableMap.put(isbn, book.getAvailableQuantity());
             } else {
@@ -51,7 +51,6 @@ public class LoanPrompt {
             }
         }
 
-        // 최종적으로 availableQuantity를 세팅
         for (String isbn : bookMap.keySet()) {
             bookMap.get(isbn).setAvailableQuantity(availableMap.get(isbn));
         }
