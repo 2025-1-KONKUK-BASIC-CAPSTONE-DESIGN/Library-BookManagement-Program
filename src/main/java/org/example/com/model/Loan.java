@@ -2,14 +2,16 @@ package org.example.com.model;
 
 public class Loan {
     private final String isbn;
+    private final String bookId;
     private final String title;
     private final String userId;
     private final String loanDate;
     private final String dueDate;
     private String returnDate;
 
-    public Loan(String isbn, String title, String userId, String loanDate, String dueDate, String returnDate) {
+    public Loan(String isbn, String bookId, String title, String userId, String loanDate, String dueDate, String returnDate) {
         this.isbn = isbn;
+        this.bookId = bookId;
         this.title = title;
         this.userId = userId;
         this.loanDate = loanDate;
@@ -19,20 +21,25 @@ public class Loan {
 
     public static Loan fromDataString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length < 5) {
+        if (parts.length < 6) {
             return null;
         }
         String isbn = parts[0];
-        String title = parts[1];
-        String userId = parts[2];
-        String loanDate = parts[3];
-        String dueDate = parts[4];
-        String returnDate = (parts.length > 5) ? parts[5] : "";
-        return new Loan(isbn, title, userId, loanDate, dueDate, returnDate);
+        String bookId = parts[1];
+        String title = parts[2];
+        String userId = parts[3];
+        String loanDate = parts[4];
+        String dueDate = parts[5];
+        String returnDate = (parts.length > 6) ? parts[6] : "";
+        return new Loan(isbn, title, userId, loanDate, dueDate, returnDate, bookId);
     }
 
     public String getIsbn() {
         return isbn;
+    }
+
+    public String getBookId() {
+        return bookId;
     }
 
     public String getTitle() {
@@ -58,4 +65,5 @@ public class Loan {
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate.trim();
     }
+
 }

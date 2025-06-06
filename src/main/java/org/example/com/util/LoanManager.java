@@ -59,6 +59,7 @@ public class LoanManager {
                 for (Loan loan : loans) {
                     writer.write(String.join("\t",
                         loan.getIsbn(),
+                        loan.getBookId(),
                         loan.getTitle(),
                         loan.getUserId(),
                         loan.getLoanDate(),
