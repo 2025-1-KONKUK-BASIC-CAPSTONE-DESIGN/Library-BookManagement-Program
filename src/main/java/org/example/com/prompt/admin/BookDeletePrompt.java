@@ -50,7 +50,7 @@ public class BookDeletePrompt {
             System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
             System.out.println("장서관리번호");
             for (Book book : books) {
-                if (book.getIsbn().equals(targetBook.getIsbn())) {
+                if (book.getIsbn().equals(targetBook.getIsbn()) && book.getAvailableQuantity() > 0) {
                     System.out.println(book.getBookId());
                 }
             }
@@ -76,7 +76,7 @@ public class BookDeletePrompt {
                 System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
                 System.out.println("장서관리번호");
                 for (Book book : books) {
-                    if (book.getIsbn().equals(targetBook.getIsbn())) {
+                    if (book.getIsbn().equals(targetBook.getIsbn()) && book.getAvailableQuantity() > 0) {
                         System.out.println(book.getBookId());
                     }
                 }
@@ -92,14 +92,9 @@ public class BookDeletePrompt {
             }
 
             if (bookToRemove != null) {
-                books.remove(bookToRemove);
-
-                boolean isbnExists = false;
-                for (Book book : books) {
-                    if (book.getIsbn().equals(targetBook.getIsbn())) {
-                        isbnExists = true;
-                        break;
-                    }
+                if (bookToRemove.getAvailableQuantity() == 0) {
+                    System.out.println("!! 현재 수량이 0인 도서는 삭제할 수 없습니다.");
+                    continue;
                 }
 
                 BookFileManager.saveAllBooks(books);
