@@ -8,8 +8,11 @@ public class Loan {
     private final String loanDate;
     private String dueDate;
     private String returnDate;
+    private int overdueDays;
+    private int penaltyLeft;
+    private boolean isExtended;
 
-    public Loan(String isbn, String title, String userId, String loanDate, String dueDate, String returnDate) {
+    public Loan(String isbn, String bookId, String title, String userId, String loanDate, String dueDate, String returnDate) {
         this.isbn = isbn;
         this.bookId = bookId;
         this.title = title;
@@ -41,6 +44,7 @@ public class Loan {
     public String toFullDataString() {
         return String.join("\t",
                 isbn,
+                bookId,
                 title,
                 userId,
                 loanDate,
@@ -57,17 +61,18 @@ public class Loan {
         if (parts.length < 5) return null;  // 최소한 대출정보는 있어야 함
 
         String isbn = parts[0];
-        String title = parts[1];
-        String userId = parts[2];
-        String loanDate = parts[3];
-        String dueDate = parts[4];
-        String returnDate = parts.length > 5 ? parts[5] : "";
+        String bookId = parts[1];
+        String title = parts[2];
+        String userId = parts[3];
+        String loanDate = parts[4];
+        String dueDate = parts[5];
+        String returnDate = parts.length > 6 ? parts[6] : "";
 
-        int overdueDays = (parts.length > 6) ? Integer.parseInt(parts[6]) : 0;
-        int penaltyLeft = (parts.length > 7) ? Integer.parseInt(parts[7]) : 0;
-        boolean isExtended = (parts.length > 8) && parts[8].equalsIgnoreCase("Y");
+        int overdueDays = (parts.length > 7) ? Integer.parseInt(parts[7]) : 0;
+        int penaltyLeft = (parts.length > 8) ? Integer.parseInt(parts[8]) : 0;
+        boolean isExtended = (parts.length > 9) && parts[9].equalsIgnoreCase("Y");
 
-        Loan loan = new Loan(isbn, title, userId, loanDate, dueDate, returnDate);
+        Loan loan = new Loan(isbn, bookId, title, userId, loanDate, dueDate, returnDate);
         loan.setOverdueDays(overdueDays);
         loan.setPenaltyLeft(penaltyLeft);
         loan.setExtended(isExtended);
