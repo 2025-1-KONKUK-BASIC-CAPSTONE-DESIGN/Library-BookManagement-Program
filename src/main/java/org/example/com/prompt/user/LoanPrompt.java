@@ -5,8 +5,8 @@ import org.example.com.util.*;
 import org.example.com.model.User;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LoanPrompt {
     private final Scanner scanner = new Scanner(System.in);
@@ -25,9 +25,37 @@ public class LoanPrompt {
 
         List<Book> books = BookFileManager.loadBooks();
 
+        Map<String, Book> bookMap = new LinkedHashMap<>();
+        Map<String, Integer> availableMap = new LinkedHashMap<>();
+
+        for (Book book : books) {
+            String isbn = book.getIsbn();
+            if (!bookMap.containsKey(isbn)) {
+                Book newBook = new Book(
+                        book.getTitle(),
+                        book.getAuthor(),
+                        book.getPublisher(),
+                        book.getIsbn(),
+                        book.getTotalQuantity(),
+                        null
+                );
+                newBook.setAvailableQuantity(book.getAvailableQuantity());
+                bookMap.put(isbn, newBook);
+                availableMap.put(isbn, book.getAvailableQuantity());
+            } else {
+                Book agg = bookMap.get(isbn);
+                agg.setTotalQuantity(agg.getTotalQuantity() + book.getTotalQuantity());
+                availableMap.put(isbn, availableMap.get(isbn) + book.getAvailableQuantity());
+            }
+        }
+
+        for (String isbn : bookMap.keySet()) {
+            bookMap.get(isbn).setAvailableQuantity(availableMap.get(isbn));
+        }
+
         boolean hasAvailable = false;
         System.out.println("\n📚 대출 가능한 도서 목록:");
-        for (Book book : books) {
+        for (Book book : bookMap.values()) {
             if (book.getAvailableQuantity() > 0) {
                 hasAvailable = true;
                 System.out.printf("- %s / 저자: %s / ISBN: %s / 남은 수량: %d\n",
@@ -54,23 +82,24 @@ public class LoanPrompt {
                 continue;
             }
 
-            Book selectedBook = null;
-            for (Book book : books) {
-                if (book.getIsbn().equals(isbn)) {
-                    selectedBook = book;
-                    break;
-                }
-            }
+            boolean exists = books.stream()
+                    .anyMatch(book -> book.getIsbn().equals(isbn));
 
-            if (selectedBook == null) {
+            if (!exists) {
                 System.out.println("!! 목록에 존재하지 않는 도서입니다.");
                 continue;
             }
 
-            if (selectedBook.getAvailableQuantity() <= 0) {
+            List<Book> availableBooks = books.stream()
+                    .filter(book -> book.getIsbn().equals(isbn) && book.getAvailableQuantity() > 0)
+                    .toList();
+
+            if (availableBooks.isEmpty()) {
                 System.out.println("❌ 해당 도서는 현재 대출이 불가능합니다.");
                 continue;
             }
+
+            Book selectedBook = availableBooks.get(new Random().nextInt(availableBooks.size()));
 
             selectedBook.setAvailableQuantity(selectedBook.getAvailableQuantity() - 1);
             currentUser.setLoanCount(currentUser.getLoanCount() + 1);
@@ -87,6 +116,7 @@ public class LoanPrompt {
             // 대출 기록을 rental_data.txt에 저장
             String loanRecord = String.join("\t",
                     selectedBook.getIsbn(),
+                    selectedBook.getBookId(),
                     selectedBook.getTitle(),
                     currentUser.getId(),
                     loadedDate.toString(),  //대출일

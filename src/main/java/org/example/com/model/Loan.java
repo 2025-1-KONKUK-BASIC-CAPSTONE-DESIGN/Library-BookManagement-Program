@@ -2,24 +2,22 @@ package org.example.com.model;
 
 public class Loan {
     private final String isbn;
+    private final String bookId;
     private final String title;
     private final String userId;
     private final String loanDate;
     private String dueDate;
     private String returnDate;
 
-    private int overdueDays;
-    private int penaltyLeft;
-    private boolean isExtended;
-
     public Loan(String isbn, String title, String userId, String loanDate, String dueDate, String returnDate) {
         this.isbn = isbn;
+        this.bookId = bookId;
         this.title = title;
         this.userId = userId;
         this.loanDate = loanDate;
         this.dueDate = dueDate;
         this.returnDate = returnDate;
-        // 2차 추가 
+        // 2차 추가
         this.overdueDays = 0;
         this.penaltyLeft = 0;
         this.isExtended = false;
@@ -27,16 +25,17 @@ public class Loan {
 
     public static Loan fromDataString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length < 5) {
+        if (parts.length < 6) {
             return null;
         }
         String isbn = parts[0];
-        String title = parts[1];
-        String userId = parts[2];
-        String loanDate = parts[3];
-        String dueDate = parts[4];
-        String returnDate = (parts.length > 5) ? parts[5] : "";
-        return new Loan(isbn, title, userId, loanDate, dueDate, returnDate);
+        String bookId = parts[1];
+        String title = parts[2];
+        String userId = parts[3];
+        String loanDate = parts[4];
+        String dueDate = parts[5];
+        String returnDate = (parts.length > 6) ? parts[6] : "";
+        return new Loan(isbn, bookId, title, userId, loanDate, dueDate, returnDate);
     }
     // 2차 추가 전체 데이터를 문자열로 반환하는 메서드
     public String toFullDataString() {
@@ -78,6 +77,10 @@ public class Loan {
 
     public String getIsbn() {
         return isbn;
+    }
+
+    public String getBookId() {
+        return bookId;
     }
 
     public String getTitle() {
@@ -131,4 +134,5 @@ public class Loan {
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate.trim();
     }
+
 }

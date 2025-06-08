@@ -5,11 +5,12 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BookFileManager {
-    private static final String BOOK_FILE_PATH = System.getProperty("user.home") + "/book_data.txt";
+    private static final String BOOK_FILE_PATH = System.getProperty("user.home") + "/book_data2.txt";
     // 한 줄(도서 데이터) 최대 글자 수
     private static final int MAX_LINE_LENGTH = 50;
 
@@ -84,5 +85,57 @@ public class BookFileManager {
             System.out.println("❌ 파일 저장 중 오류 발생");
             e.printStackTrace();
         }
+    }
+
+    public static boolean isIsbnExists(String isbn) {
+        List<Book> books = loadBooks();
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isBookIdExists(String bookId) {
+        List<Book> books = loadBooks();
+        for (Book book : books) {
+            if (book.getBookId().equals(bookId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String generateNextBookId() {
+        List<Book> books = BookFileManager.loadBooks();
+        // 현재 연도 2자리 구하기
+        LocalDate date = DateManager.loadDateFromFile();
+        if (date == null) {
+            throw new IllegalStateException("날짜 파일을 불러올 수 없습니다.");
+        }
+        int year = date.getYear() % 100;
+        String yearStr = String.format("%02d", year);
+
+        int maxId = 0;
+        // 현재 연도에 해당하는 최대 순번 찾기
+        for (Book book : books) {
+            String bookId = book.getBookId();
+            if (bookId != null && bookId.startsWith("LIB" + yearStr + "-")) {
+                String idPart = bookId.substring(7); // "LIByy-" 다음 5자리
+                try {
+                    int id = Integer.parseInt(idPart);
+                    if (id > maxId) maxId = id;
+                } catch (NumberFormatException e) {
+                    // 무시
+                }
+            }
+        }
+        // 최대값 제한 체크
+        if (maxId >= 99999) {
+            throw new IllegalStateException("장서번호가 LIB" + yearStr + "-99999를 초과할 수 없습니다.");
+        }
+        int nextId = maxId + 1;
+        return String.format("LIB%s-%05d", yearStr, nextId);
     }
 }

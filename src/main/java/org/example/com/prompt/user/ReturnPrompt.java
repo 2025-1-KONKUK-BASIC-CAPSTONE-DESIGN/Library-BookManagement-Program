@@ -88,20 +88,15 @@ public class ReturnPrompt {
             selectedLoan.setOverdueDays(overdue);
             selectedLoan.setPenaltyLeft(penalty);
 
-// 책과 유저 상태 반영
             selectedBook = books.stream()
-                    .filter(book -> book.getIsbn().equals(isbn))
-                    .findFirst().orElse(null);
-            selectedBook = books.stream()
-                    .filter(book -> book.getIsbn().equals(isbn))
-                    .findFirst().orElse(null);
+                    .filter(book -> book.getBookId().equals(bookId))
+                    .findFirst()
+                    .orElse(null);
 
-            if (selectedBook == null
-                    || selectedBook.getAvailableQuantity() == selectedBook.getTotalQuantity()) {
-                System.out.println("!! 고유하지 않은 ISBN입니다.");
+            if (selectedBook == null) {
+                System.out.println("!! 목록에 존재하지 않는 도서입니다.");
                 continue;
             }
-
 
             selectedBook.setAvailableQuantity(selectedBook.getAvailableQuantity() + 1);
             currentUser.setLoanCount(currentUser.getLoanCount() - 1);
