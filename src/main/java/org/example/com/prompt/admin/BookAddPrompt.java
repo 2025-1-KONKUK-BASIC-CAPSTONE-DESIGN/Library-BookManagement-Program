@@ -28,11 +28,8 @@ public class BookAddPrompt {
         List<Book> books = BookFileManager.loadBooks();
         for (Book book : books) {
             if (book.getIsbn().equals(isbn)) {
-                book.setAvailableQuantity(book.getAvailableQuantity() + 1);
-                book.setTotalQuantity(book.getTotalQuantity() + 1);
-                String newBookId = BookFileManager.generateNextBookId();
-                BookFileManager.saveAllBooks(books);
-                System.out.println("⚠️ 중복된 도서가 있습니다. 새 장서관리번호 " + newBookId + "부여 및 권수를 하나 추가 완료하였습니다.");
+                bookAdd(isbn, book.getTitle(), book.getAuthor(), book.getPublisher());
+                System.out.println("⚠️ 중복된 도서가 있습니다. 새 장서관리번호 부여 및 권수를 하나 추가 완료하였습니다.");
                 return;
             }
         }

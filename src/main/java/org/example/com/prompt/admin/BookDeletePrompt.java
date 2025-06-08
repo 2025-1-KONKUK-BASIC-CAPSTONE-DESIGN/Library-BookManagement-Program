@@ -97,6 +97,7 @@ public class BookDeletePrompt {
                     continue;
                 }
 
+                books.remove(bookToRemove);
                 BookFileManager.saveAllBooks(books);
                 System.out.println("‘도서 삭제가 완료되었습니다.’");
                 return;
