@@ -18,8 +18,17 @@ public class BookDeletePrompt {
             return;
         }
 
-        Book targetBook = null;
+        Book targetBook = deleteCheckIsbn(books);
+        if (targetBook == null) return;
 
+        boolean result = deleteCheckBookId(targetBook, books);
+        if (result) {
+            System.out.println("‘도서 삭제가 완료되었습니다.’");
+        }
+    }
+
+    // ISBN 입력 및 확인
+    private Book deleteCheckIsbn(List<Book> books) {
         while (true) {
             System.out.print("deleteBookISBN: ");
             String isbn = scanner.nextLine().trim();
@@ -31,53 +40,46 @@ public class BookDeletePrompt {
 
             if (!BookFileManager.isIsbnExists(isbn)) {
                 System.out.println("❌ 해당 ISBN에 해당하는 도서가 없습니다.");
-                return;
+                return null;
             }
 
             for (Book book : books) {
                 if (book.getIsbn().equals(isbn)) {
-                    targetBook = book;
-                    break;
+                    System.out.println("제목: " + book.getTitle());
+                    System.out.println("대출 가능 수량: " + book.getAvailableQuantity());
+                    System.out.println("장서관리번호");
+                    for (Book b : books) {
+                        if (b.getIsbn().equals(isbn) && b.getAvailableQuantity() > 0) {
+                            System.out.println(b.getBookId());
+                        }
+                    }
+                    return book;
                 }
             }
-
-            if (targetBook == null) {
-                System.out.println("❌ 시스템 오류: 해당 ISBN 도서 객체를 찾을 수 없습니다.");
-                return;
-            }
-
-            System.out.println("제목: " + targetBook.getTitle());
-            System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
-            System.out.println("장서관리번호");
-            for (Book book : books) {
-                if (book.getIsbn().equals(targetBook.getIsbn()) && book.getAvailableQuantity() > 0) {
-                    System.out.println(book.getBookId());
-                }
-            }
-            break;
+            System.out.println("❌ 시스템 오류: 해당 ISBN 도서 객체를 찾을 수 없습니다.");
+            return null;
         }
+    }
 
-        // 장서관리번호 입력 및 삭제
+    // 장서관리번호 입력 및 삭제
+    private boolean deleteCheckBookId(Book targetBook, List<Book> books) {
         while (true) {
             System.out.print("삭제할 장서관리번호를 입력하세요: ");
             String bookIdInput = scanner.nextLine().trim();
 
-            // 문법 형식 체크
             if (!BOOK_ID_PATTERN.matcher(bookIdInput).matches()) {
                 System.out.println("!! 올바른 형식이 아닙니다. LIBOO-OOOOO 형식으로 다시 입력해주세요.");
                 continue;
             }
 
-            // 해당 도서의 장서관리번호에 존재하는지 체크
             if (!BookFileManager.isBookIdExists(bookIdInput)) {
                 System.out.println("!! 해당 도서에는 입력한 장서관리번호가 없습니다. 다시 입력해주세요.");
-                // 도서 정보 재출력
                 System.out.println("제목: " + targetBook.getTitle());
                 System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
                 System.out.println("장서관리번호");
-                for (Book book : books) {
-                    if (book.getIsbn().equals(targetBook.getIsbn()) && book.getAvailableQuantity() > 0) {
-                        System.out.println(book.getBookId());
+                for (Book b : books) {
+                    if (b.getIsbn().equals(targetBook.getIsbn()) && b.getAvailableQuantity() > 0) {
+                        System.out.println(b.getBookId());
                     }
                 }
                 continue;
@@ -99,10 +101,10 @@ public class BookDeletePrompt {
 
                 books.remove(bookToRemove);
                 BookFileManager.saveAllBooks(books);
-                System.out.println("‘도서 삭제가 완료되었습니다.’");
-                return;
+                return true;
             } else {
                 System.out.println("!! 해당 장서관리번호를 가진 도서가 없습니다.");
+                return false;
             }
         }
     }
