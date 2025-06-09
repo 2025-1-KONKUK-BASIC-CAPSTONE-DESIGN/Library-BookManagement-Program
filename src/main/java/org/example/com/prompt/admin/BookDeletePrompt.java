@@ -11,101 +11,91 @@ public class BookDeletePrompt {
     private static final Pattern ISBN_PATTERN = Pattern.compile("^\\d{13}$");
     private static final Pattern BOOK_ID_PATTERN = Pattern.compile("^LIB\\d{2}-\\d{5}$");
 
+    // 도서 삭제 전체 흐름
     public void start() {
-        List<Book> books = BookFileManager.loadBooks();
-        if (books.isEmpty()) {
-            System.out.println("📭 등록된 도서가 없습니다.");
+        // ISBN으로 도서 삭제
+        String isbn = deleteCheckIsbn();
+        if (isbn == null) {
             return;
         }
 
-        Book targetBook = deleteCheckIsbn(books);
-        if (targetBook == null) return;
-
-        boolean result = deleteCheckBookId(targetBook, books);
-        if (result) {
-            System.out.println("‘도서 삭제가 완료되었습니다.’");
+        // 장서관리번호로 도서 삭제
+        boolean bookIdDeleteResult = deleteCheckBookId(isbn);
+        if (bookIdDeleteResult) {
+            System.out.println("도서 삭제가 완료되었습니다.");
         }
     }
 
-    // ISBN 입력 및 확인
-    private Book deleteCheckIsbn(List<Book> books) {
-        while (true) {
-            System.out.print("deleteBookISBN: ");
-            String isbn = scanner.nextLine().trim();
-
-            if (!ISBN_PATTERN.matcher(isbn).matches()) {
-                System.out.println("!! ISBN을 입력해주세요. ISBN은 공백없는 13자리 숫자로 구성돼있습니다.");
-                continue;
-            }
-
-            if (!BookFileManager.isIsbnExists(isbn)) {
-                System.out.println("❌ 해당 ISBN에 해당하는 도서가 없습니다.");
-                return null;
-            }
-
-            for (Book book : books) {
-                if (book.getIsbn().equals(isbn)) {
-                    System.out.println("제목: " + book.getTitle());
-                    System.out.println("대출 가능 수량: " + book.getAvailableQuantity());
-                    System.out.println("장서관리번호");
-                    for (Book b : books) {
-                        if (b.getIsbn().equals(isbn) && b.getAvailableQuantity() > 0) {
-                            System.out.println(b.getBookId());
-                        }
-                    }
-                    return book;
-                }
-            }
-            System.out.println("❌ 시스템 오류: 해당 ISBN 도서 객체를 찾을 수 없습니다.");
+    public String deleteCheckIsbn() {
+        List<Book> books = BookFileManager.loadBooks();
+        if (books.isEmpty()) {
+            System.out.println("📭 등록된 도서가 없습니다.");
             return null;
         }
-    }
 
-    // 장서관리번호 입력 및 삭제
-    private boolean deleteCheckBookId(Book targetBook, List<Book> books) {
-        while (true) {
-            System.out.print("삭제할 장서관리번호를 입력하세요: ");
-            String bookIdInput = scanner.nextLine().trim();
+        System.out.print("삭제할 도서의 ISBN을 입력하세요: ");
+        String isbn = scanner.nextLine().trim();
 
-            if (!BOOK_ID_PATTERN.matcher(bookIdInput).matches()) {
-                System.out.println("!! 올바른 형식이 아닙니다. LIBOO-OOOOO 형식으로 다시 입력해주세요.");
-                continue;
-            }
+        if (!ISBN_PATTERN.matcher(isbn).matches()) {
+            System.out.println("!! ISBN은 공백없는 13자리 숫자로 구성돼있습니다.");
+            return null;
+        }
 
-            if (!BookFileManager.isBookIdExists(bookIdInput)) {
-                System.out.println("!! 해당 도서에는 입력한 장서관리번호가 없습니다. 다시 입력해주세요.");
-                System.out.println("제목: " + targetBook.getTitle());
-                System.out.println("대출 가능 수량: " + targetBook.getAvailableQuantity());
+        boolean isbnExists = BookFileManager.isIsbnExists(isbn);
+        if (!isbnExists) {
+            System.out.println("❌ 해당 ISBN에 해당하는 도서가 없습니다.");
+            return null;
+        }
+
+        // 도서 정보 출력
+        System.out.println("해당 ISBN의 도서 정보:");
+        for (Book book : books) {
+            if (book.getIsbn().equals(isbn)) {
+                System.out.println("제목: " + book.getTitle());
+                System.out.println("대출 가능 수량: " + book.getAvailableQuantity());
                 System.out.println("장서관리번호");
+                // 같은 ISBN의 모든 장서관리번호 출력
                 for (Book b : books) {
-                    if (b.getIsbn().equals(targetBook.getIsbn()) && b.getAvailableQuantity() > 0) {
+                    if (b.getIsbn().equals(isbn)) {
                         System.out.println(b.getBookId());
                     }
                 }
-                continue;
+                break;
             }
+        }
+        return isbn;
+    }
 
-            Book bookToRemove = null;
-            for (Book book : books) {
-                if (book.getBookId().equals(bookIdInput)) {
-                    bookToRemove = book;
-                    break;
-                }
-            }
+    public boolean deleteCheckBookId(String isbn) {
+        List<Book> books = BookFileManager.loadBooks();
 
-            if (bookToRemove != null) {
-                if (bookToRemove.getAvailableQuantity() == 0) {
-                    System.out.println("!! 현재 수량이 0인 도서는 삭제할 수 없습니다.");
-                    continue;
-                }
+        // ISBN → 장서관리번호 Map 직접 만들기
+        Map<String, List<String>> isbnToBookIds = new HashMap<>();
+        for (Book book : books) {
+            String bookId = book.getBookId();
+            isbnToBookIds.computeIfAbsent(book.getIsbn(), k -> new ArrayList<>()).add(bookId);
+        }
 
-                books.remove(bookToRemove);
-                BookFileManager.saveAllBooks(books);
-                return true;
-            } else {
-                System.out.println("!! 해당 장서관리번호를 가진 도서가 없습니다.");
-                return false;
-            }
+        // 이미 ISBN의 존재는 검증되었으니, 여기서는 바로 장서관리번호만 받으면 됨
+        System.out.print("삭제할 장서관리번호를 입력하세요: ");
+        String bookId = scanner.nextLine().trim();
+
+        List<String> bookIds = isbnToBookIds.get(isbn);
+
+        if (bookIds == null || !bookIds.contains(bookId)) {
+            System.out.println("입력한 장서관리번호는 해당 ISBN의 도서 목록에 없습니다.");
+            return false;
+        }
+
+        // 실제 삭제
+        boolean removed = books.removeIf(book ->
+                book.getIsbn().equals(isbn) && book.getBookId().equals(bookId));
+        if (removed) {
+            BookFileManager.saveAllBooks(books);
+            return true;
+        } else {
+            System.out.println("삭제 과정에서 오류가 발생했습니다.");
+            return false;
         }
     }
 }
