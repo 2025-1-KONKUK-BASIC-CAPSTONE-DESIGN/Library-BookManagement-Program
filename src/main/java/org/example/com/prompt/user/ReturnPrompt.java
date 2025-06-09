@@ -89,7 +89,7 @@ public class ReturnPrompt {
             selectedLoan.setPenaltyLeft(penalty);
 
             selectedBook = books.stream()
-                    .filter(book -> book.getBookId().equals(bookId))
+                    .filter(book -> book.getBookId().equals(selectedLoan.getBookId()))
                     .findFirst()
                     .orElse(null);
 

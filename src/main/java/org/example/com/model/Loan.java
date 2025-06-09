@@ -58,7 +58,7 @@ public class Loan {
     // 2차 추가 연체, 패널티, 연장 여부를 포함한 전체 데이터 파서
     public static Loan fromFullDataString(String line) {
         String[] parts = line.split("\t");
-        if (parts.length < 5) return null;  // 최소한 대출정보는 있어야 함
+        if (parts.length < 6) return null;  // 최소한 대출정보는 있어야 함
 
         String isbn = parts[0];
         String bookId = parts[1];
