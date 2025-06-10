@@ -4,6 +4,7 @@ import org.example.com.model.Book;
 import org.example.com.util.*;
 import org.example.com.model.User;
 
+import org.example.com.model.Loan;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +24,19 @@ public class LoanPrompt {
             return;
         }
 
+        List<Loan> userLoans = LoanManager.getUserLoanRecord(currentUser.getId());
+        boolean isCurrentlyOverdue = userLoans.stream()
+                .anyMatch(loan -> loan.getOverdueDays() > 0 && loan.getReturnDate().isEmpty());
+
+        if (isCurrentlyOverdue) {
+            System.out.println("❌ 대출 불가: 현재 연체 중인 도서가 존재합니다.");
+            return;
+        }
+
+        if (currentUser.getPenaltyDays() > 0) {
+            System.out.println("❌ 대출 불가: 현재 남은 패널티 일수 " + currentUser.getPenaltyDays() + "일");
+            return;
+        }
         List<Book> books = BookFileManager.loadBooks();
 
         Map<String, Book> bookMap = new LinkedHashMap<>();

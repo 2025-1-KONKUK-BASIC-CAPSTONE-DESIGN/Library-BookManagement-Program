@@ -88,6 +88,9 @@ public class ReturnPrompt {
             selectedLoan.setOverdueDays(overdue);
             selectedLoan.setPenaltyLeft(penalty);
 
+            if (penalty > 0) {
+                currentUser.setTotalPenalty(currentUser.getTotalPenalty() + penalty);
+            }
             selectedBook = books.stream()
                     .filter(book -> book.getBookId().equals(selectedLoan.getBookId()))
                     .findFirst()

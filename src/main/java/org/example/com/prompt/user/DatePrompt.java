@@ -36,6 +36,22 @@ public class DatePrompt {
             try {
                 LocalDate newDate = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                 LocalDate current = DateManager.loadDateFromFile();
+                long daysPassed = java.time.temporal.ChronoUnit.DAYS.between(current, newDate);
+
+// 사용자 패널티 감소
+                if (daysPassed > 0 && currentUser.getPenaltyDays() > 0) {
+                    int updatedPenalty = Math.max(0, currentUser.getPenaltyDays() - (int) daysPassed);
+                    currentUser.setPenaltyDays(updatedPenalty);
+                }
+
+// 대출 기록 penaltyLeft 감소
+                var userLoans = LoanManager.getUserLoanRecord(currentUser.getId());
+                for (var loan : userLoans) {
+                    int oldPenalty = loan.getPenaltyLeft();
+                    int newPenalty = Math.max(0, oldPenalty - (int) daysPassed);
+                    loan.setPenaltyLeft(newPenalty);
+                }
+                LoanManager.updateLoan();
 
                 if (current == null) {
                     System.err.println("current 데이터가 없습니다.");
