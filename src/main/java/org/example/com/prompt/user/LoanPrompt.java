@@ -16,12 +16,10 @@ public class LoanPrompt {
     public LoanPrompt(User user) {
         this.currentUser = user;
     }
-
-    public void start() {
-
+    private boolean checkLoan() {
         if (currentUser.getLoanCount() >= 5) {
             System.out.println("❌ 대출 권한 초과: 최대 5권까지 대출할 수 있습니다.");
-            return;
+            return false;
         }
 
         List<Loan> userLoans = LoanManager.getUserLoanRecord(currentUser.getId());
@@ -30,13 +28,19 @@ public class LoanPrompt {
 
         if (isCurrentlyOverdue) {
             System.out.println("❌ 대출 불가: 현재 연체 중인 도서가 존재합니다.");
-            return;
+            return false;
         }
 
         if (currentUser.getPenaltyDays() > 0) {
             System.out.println("❌ 대출 불가: 현재 남은 패널티 일수 " + currentUser.getPenaltyDays() + "일");
-            return;
+            return false;
         }
+
+        return true;
+    }
+    public void start() {
+        if (!checkLoan()) return;
+
         List<Book> books = BookFileManager.loadBooks();
 
         Map<String, Book> bookMap = new LinkedHashMap<>();

@@ -116,7 +116,7 @@ public class Loan {
         return penaltyLeft;
     }
 
-    public boolean isExtended() {
+    public boolean getIsExtended() {
         return isExtended;
     }
 
