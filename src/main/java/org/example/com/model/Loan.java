@@ -75,7 +75,7 @@ public class Loan {
         Loan loan = new Loan(isbn, bookId, title, userId, loanDate, dueDate, returnDate);
         loan.setOverdueDays(overdueDays);
         loan.setPenaltyLeft(penaltyLeft);
-        loan.setExtended(isExtended);
+        loan.setIsExtended(isExtended);
         return loan;
     }
 
@@ -132,7 +132,7 @@ public class Loan {
         this.penaltyLeft = penaltyLeft;
     }
 
-    public void setExtended(boolean isExtended) {
+    public void setIsExtended(boolean isExtended) {
         this.isExtended = isExtended;
     }
 

@@ -69,7 +69,7 @@ public class ExtendPrompt {
             return;
         }
         Loan loan = optionalLoan.get();
-        loan.setExtended(true);
+        loan.setIsExtended(true);
         LocalDate dueDate = LocalDate.parse(loan.getDueDate());
         LocalDate newDueDate = dueDate.plusDays(7);
         loan.setDueDate(newDueDate.toString());
