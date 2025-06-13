@@ -44,4 +44,12 @@ public class User {
     public boolean isOverdueDays() {
         return LoanManager.isUserOverdue(this.id);
     }
+    public int getPenaltyDays() {
+        return totalPenalty;
+    }
+
+    public void setPenaltyDays(int days) {
+        this.totalPenalty = days;
+    }
+
 }

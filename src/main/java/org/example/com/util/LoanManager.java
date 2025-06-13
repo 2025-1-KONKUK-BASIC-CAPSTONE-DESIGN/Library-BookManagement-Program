@@ -51,7 +51,7 @@ public class LoanManager {
 
                 } else {
                     // 반납하지 않은 경우: 현재 날짜 기준으로 실시간 계산
-                    int overdue = calculateOverdueDays(record);
+                    int overdue = overdueDaysCaculate(record);
                     int penalty = calculatePenalty(overdue);
                     record.setOverdueDays(overdue);
                     record.setPenaltyLeft(penalty);
@@ -144,7 +144,7 @@ public class LoanManager {
         return maxOverdueDays(today, loans);
     }
     //2차 추가
-    public static int calculateOverdueDays(Loan loan) {
+    public static int overdueDaysCaculate(Loan loan) {
         LocalDate due = LocalDate.parse(loan.getDueDate());
         LocalDate baseDate;
 

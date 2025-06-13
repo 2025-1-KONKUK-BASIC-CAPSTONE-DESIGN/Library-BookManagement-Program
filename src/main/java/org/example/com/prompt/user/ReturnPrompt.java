@@ -83,11 +83,14 @@ public class ReturnPrompt {
 
             selectedLoan.setReturnDate(today.toString());   //대출일 지정
 // 2차 추가 연체 정보 반영
-            int overdue = LoanManager.calculateOverdueDays(selectedLoan);
+            int overdue = LoanManager.overdueDaysCaculate(selectedLoan);
             int penalty = LoanManager.calculatePenalty(overdue);
             selectedLoan.setOverdueDays(overdue);
             selectedLoan.setPenaltyLeft(penalty);
 
+            if (penalty > 0) {
+                currentUser.setTotalPenalty(currentUser.getTotalPenalty() + penalty);
+            }
             selectedBook = books.stream()
                     .filter(book -> book.getBookId().equals(selectedLoan.getBookId()))
                     .findFirst()
