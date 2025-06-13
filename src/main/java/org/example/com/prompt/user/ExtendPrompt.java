@@ -55,8 +55,9 @@ public class ExtendPrompt {
     }
 
     private Optional<Loan> extendableLoan(String isbn) {
-        return LoanManager.getUserNowLoanRecord().stream()
+        return LoanManager.getUserLoanRecord(currentUser.getId()).stream()
                 .filter(loan -> loan.getIsbn().equals(isbn))
+                .filter(loan -> loan.getReturnDate().isEmpty())
                 .sorted(Comparator.comparing(loan -> LocalDate.parse(loan.getLoanDate())))
                 .filter(loan -> !loan.getIsExtended())
                 .findFirst();
