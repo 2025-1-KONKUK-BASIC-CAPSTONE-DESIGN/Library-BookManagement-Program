@@ -67,11 +67,14 @@ public class LoanManager {
     }
 
     public static List<Loan> getUserLoanRecord(String id) {
-        loans = loadLoanRecord().stream()
-                .filter(loan -> loan.getUserId().equals(id))
-                .toList();
-        userLoanRecord = loans;
-        return loans;
+        loans = loadLoanRecord(); // Always update with the latest data
+        userLoanRecord = new ArrayList<>();
+        for (Loan loan : loans) {
+            if (loan.getUserId().equals(id)) {
+                userLoanRecord.add(loan); // Maintain reference to the same objects
+            }
+        }
+        return userLoanRecord;
     }
 
     public static boolean isIsbnExists(String isbn) {
@@ -81,12 +84,6 @@ public class LoanManager {
                 .toList();
 
         return userNowLoans.stream().anyMatch(loan -> loan.getIsbn().equals(isbn));
-    }
-
-    public static List<Loan> getUserNowLoanRecord() {
-        return userLoanRecord.stream()
-                .filter(loan -> loan.getReturnDate().isEmpty())
-                .toList();
     }
 
     public static List<Loan> loadNotReturnedLoans(String id) {
