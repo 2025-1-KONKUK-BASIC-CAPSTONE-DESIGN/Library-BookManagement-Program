@@ -49,18 +49,32 @@ public class BookDeletePrompt {
 
         // 도서 정보 출력
         System.out.println("해당 ISBN의 도서 정보:");
+
+        // 대출 가능 수량 합산
+        int totalAvailableQuantity = 0;
+        String title = null;
         for (Book book : books) {
             if (book.getIsbn().equals(isbn)) {
-                System.out.println("제목: " + book.getTitle());
-                System.out.println("대출 가능 수량: " + book.getAvailableQuantity());
-                System.out.println("장서관리번호");
-                // 같은 ISBN의 모든 장서관리번호 출력
-                for (Book b : books) {
-                    if (b.getIsbn().equals(isbn)) {
-                        System.out.println(b.getBookId());
-                    }
+                totalAvailableQuantity += book.getAvailableQuantity();
+                if (title == null) {
+                    title = book.getTitle();
                 }
-                break;
+            }
+        }
+
+        if (totalAvailableQuantity == 0) {
+            System.out.println("❌ 해당 ISBN의 모든 도서가 대출 중이거나 이용 불가 상태입니다. 삭제할 수 없습니다.");
+            return null;
+        }
+
+        if (title != null) {
+            System.out.println("제목: " + title);
+            System.out.println("대출 가능 수량: " + totalAvailableQuantity);
+            System.out.println("장서관리번호");
+            for (Book b : books) {
+                if (b.getIsbn().equals(isbn) && b.getAvailableQuantity()!=0) {
+                    System.out.println(b.getBookId());
+                }
             }
         }
         return isbn;
@@ -69,27 +83,35 @@ public class BookDeletePrompt {
     public boolean deleteCheckBookId(String isbn) {
         List<Book> books = BookFileManager.loadBooks();
 
-        // ISBN → 장서관리번호 Map 직접 만들기
         Map<String, List<String>> isbnToBookIds = new HashMap<>();
         for (Book book : books) {
             String bookId = book.getBookId();
             isbnToBookIds.computeIfAbsent(book.getIsbn(), k -> new ArrayList<>()).add(bookId);
         }
 
-        // 이미 ISBN의 존재는 검증되었으니, 여기서는 바로 장서관리번호만 받으면 됨
-        System.out.print("삭제할 장서관리번호를 입력하세요: ");
-        String bookId = scanner.nextLine().trim();
+        String bookId;
+        while (true) {
+            System.out.print("삭제할 장서관리번호를 입력하세요: ");
+            String input = scanner.nextLine().trim();
 
-        List<String> bookIds = isbnToBookIds.get(isbn);
+            if (!BOOK_ID_PATTERN.matcher(input).matches()) {
+                System.out.println("!! 올바른 형식이 아닙니다. LIBOO-OOOOO 형식으로 다시 입력해주세요.");
+                continue;
+            }
+            bookId = input;
+            List<String> bookIds = isbnToBookIds.get(isbn);
 
-        if (bookIds == null || !bookIds.contains(bookId)) {
-            System.out.println("입력한 장서관리번호는 해당 ISBN의 도서 목록에 없습니다.");
-            return false;
+            if (bookIds == null || !bookIds.contains(bookId)) {
+                System.out.println("입력한 장서관리번호는 해당 ISBN의 도서 목록에 없습니다.");
+                return false;
+            }
+            break;
         }
 
-        // 실제 삭제
+
+        String finalBookId = bookId;
         boolean removed = books.removeIf(book ->
-                book.getIsbn().equals(isbn) && book.getBookId().equals(bookId));
+                book.getIsbn().equals(isbn) && book.getBookId().equals(finalBookId));
         if (removed) {
             BookFileManager.saveAllBooks(books);
             return true;
