@@ -45,7 +45,7 @@ public class SignUpPrompt {
         String phone;
         while (true) {
             System.out.print("전화번호를 입력하세요 (010 xxxx xxxx): ");
-            phone = scanner.nextLine().trim();
+            phone = scanner.nextLine();
 
             if (!Validator.isValidPhone(phone)) {
                 System.out.println("❌ 전화번호 형식은 010 xxxx xxxx 입니다.");
@@ -57,7 +57,7 @@ public class SignUpPrompt {
         String email;
         while (true) {
             System.out.print("메일주소를 입력하세요 (@gmail.com): ");
-            email = scanner.nextLine().trim();
+            email = scanner.nextLine();
 
             if (!Validator.isValidEmail(email)) {
                 System.out.println("❌ 이메일은 @gmail.com 도메인만 허용됩니다. 형식도 확인해주세요.");
